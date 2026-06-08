@@ -2,8 +2,15 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from database import Base, engine
+from controllers import usuario_controller, categoria_controller
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="PDV AAPM")
+
+app.include_router(usuario_controller.router)
+app.include_router(categoria_controller.router)
 
 # Arquivos estáticos
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
