@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}Painel Administrativo - AAPM{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Sobrescreve o layout do base.html */
+    .hero {
+        display: block !important;
+        overflow-y: auto !important;
+    }
+    
+    .hero__content {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100%;
+    }
+    
+    .logo {
+        display: none !important;
+    }
+
+    /* Dashboard Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap');
+
+    :root {
+        --red-deep: #8B0000;
+        --red-mid: #C0392B;
+        --red-bright: #E74C3C;
+        --red-glow: #FF2D2D;
+        --dark-bg: #1a1a1a;
+        --sidebar-bg: #222222;
+        --header-bg: #2d2d2d;
+        --gold: #C9A84C;
+        --text-light: #f0f0f0;
+        --text-muted: #aaa;
+    }
+
+    body, .hero, .hero__content {
+        overflow-y: auto !important;
+    }
+
+    header {
+        background: var(--header-bg);
+        min-height: 90px;
+        display: flex;
+        align-items: center;
+        padding: 18px 28px;
+        border-bottom: 2px solid var(--red-mid);
+        position: relative;
+        z-index: 10;
+        justify-content: center;
+    }
+
+    .header-left {
+        position: absolute;
+        left: 28px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-left h1 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.4rem;
+        color: var(--gold);
+        letter-spacing: 3px;
+        line-height: 1;
+    }
+
+    .header-left p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .logo-dash {
+        margin-left: auto;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #C9A84C 0%, #8B5E0A 50%, #C9A84C 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        color: #111;
+        box-shadow: 0 0 18px rgba(201,168,76,0.45);
+        border: 2px solid #C9A84C;
+        position: absolute;
+        right: 28px;
+    }
+
+    .layout {
+        display: flex;
+        flex: 1;
+        min-height: calc(100vh - 128px);
+    }
+
+    aside {
+        width: 170px;
+        min-width: 170px;
+        background: var(--sidebar-bg);
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+        border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sidebar-label {
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        color: var(--red-bright);
+        text-transform: uppercase;
+        padding: 0 22px 12px;
+    }
+
+    .nav-links {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 0 10px;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 10px 14px;
+        color: var(--text-light);
+        text-decoration: none;
+        font-size: 0.88rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-align: center;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+        background: rgba(192,57,43,0.25);
+        color: var(--gold);
+    }
+
+    .sidebar-bottom {
+        padding: 0 10px;
+    }
+
+    .sidebar-bottom a {
+        display: block;
+        padding: 10px 14px;
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 6px;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-bottom a:hover {
+        background: rgba(255,255,255,0.07);
+        color: #fff;
+    }
+
+    main {
+        flex: 1;
+        position: relative;
+    }
+
+    .page {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        padding-top: 40px;
+        overflow-y: auto;
+    }
+    .page.active {
+        display: flex;
+        animation: fadeIn 0.4s ease both;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: none; }
+    }
+
+    .page-title-bar {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 24px 32px 0;
+    }
+
+    .btn-voltar {
+        background: linear-gradient(135deg, #C9A84C, #8B5E0A);
+        color: #111;
+        font-weight: 700;
+        padding: 7px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 10px rgba(201,168,76,.4);
+    }
+
+    .page-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.2rem;
+        letter-spacing: 3px;
+    }
+    .page-title span {
+        color: var(--gold);
+        font-family: 'Barlow', sans-serif;
+        font-size: 2rem;
+        font-weight: 300;
+        margin-left: 10px;
+    }
+
+    .content-area {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .hero-card {
+        display: flex;
+        background: rgba(15,0,0,0.75);
+        border-radius: 16px;
+        overflow: hidden;
+        max-width: 540px;
+        width: 100%;
+        backdrop-filter: blur(6px);
+    }
+
+    .hero-image-placeholder {
+        width: 220px;
+        min-width: 220px;
+        background: linear-gradient(135deg, #5a1010 0%, #2a0505 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.15);
+        min-height: 200px;
+    }
+
+    .hero-info {
+        padding: 28px 24px;
+        background: linear-gradient(135deg, rgba(20,0,0,0.8) 0%, rgba(40,10,10,0.9) 100%);
+    }
+
+    .hero-info h2 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.85rem;
+        color: #fff;
+    }
+
+    .catalog-area, .categories-area {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 40px;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .catalog-frame {
+        width: 300px;
+        height: 250px;
+        border: 2px solid rgba(200,200,255,.25);
+        background: rgba(0,0,0,.18);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .cat-card {
+        width: 210px;
+        background: rgba(0,0,0,.45);
+        border: 1.5px solid rgba(200,100,100,.35);
+        border-radius: 14px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .25s;
+    }
+    .cat-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .cat-img-placeholder {
+        height: 160px;
+        background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 55%, #5a9e5a 55%, #4a8c4a 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cat-body {
+        padding: 14px;
+        background: rgba(10,0,0,.6);
+        text-align: center;
+    }
+
+    .cat-name {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        color: #fff;
+    }
+
+    .cat-btn {
+        margin-top: 10px;
+        background: linear-gradient(135deg, #C9A84C, #8B5E0A);
+        color: #111;
+        padding: 7px 14px;
+        border-radius: 20px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .footer-bar {
+        background: var(--sidebar-bg);
+        border-top: 1px solid rgba(255,255,255,.07);
+        padding: 8px 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gold);
+        height: 38px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header>
+    <div class="header-left">
+        <h1 id="header-title">BEM VINDO</h1>
+        <p id="header-sub">Conheça nossos serviços e catálogos</p>
+    </div>
+    <div class="logo-dash">AAPM</div>
+</header>
+
+<div class="layout">
+    <aside>
+        <div class="sidebar-label">Dashboard</div>
+        <nav class="nav-links">
+            <a onclick="goTo('home')" id="nav-home" class="active">Dashboard</a>
+            <a onclick="goTo('catalogos')" id="nav-catalogos">Catálogos</a>
+            <a onclick="goTo('categorias')" id="nav-categorias">Categorias</a>
+            <a onclick="goTo('horarios')" id="nav-horarios">Horários</a>
+            <a onclick="goTo('servicos')" id="nav-servicos">Serviços</a>
+            <a onclick="goTo('duvidas')" id="nav-duvidas">Dúvidas</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <a href="/logout">Sair</a>
+        </div>
+    </aside>
+
+    <main>
+        <div class="page active" id="page-home">
+            <div class="content-area">
+                <div class="hero-card">
+                    <div class="hero-image-placeholder">[ imagem ]</div>
+                    <div class="hero-info">
+                        <h2>INOVAÇÃO<br>TECNOLÓGICA</h2>
+                        <div class="brand">Senai-SP</div>
+                        <div class="instagram">Instagram: @senaitextilemoda</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-catalogos">
+            <div class="page-title-bar">
+                <button class="btn-voltar" onclick="goTo('home')">← Voltar</button>
+                <div class="page-title">CATÁLOGO DE <span>produtos</span></div>
+            </div>
+            <div class="catalog-area">
+                <div class="catalog-frame">Catálogo 1</div>
+                <div class="catalog-frame">Catálogo 2</div>
+            </div>
+        </div>
+
+        <div class="page" id="page-categorias">
+            <div class="page-title-bar">
+                <button class="btn-voltar" onclick="goTo('home')">← Voltar</button>
+                <div class="page-title">CATEGORIAS <span>produtos</span></div>
+            </div>
+            <div class="categories-area">
+                <div class="cat-card">
+                    <div class="cat-img-placeholder">☁️</div>
+                    <div class="cat-body">
+                        <div class="cat-name">CATEGORIA</div>
+                        <button class="cat-btn">Ver detalhes</button>
+                    </div>
+                </div>
+                <div class="cat-card">
+                    <div class="cat-img-placeholder">☁️</div>
+                    <div class="cat-body">
+                        <div class="cat-name">CATEGORIA</div>
+                        <button class="cat-btn">Ver detalhes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-horarios">
+            <div class="page-title-bar">
+                <button class="btn-voltar" onclick="goTo('home')">← Voltar</button>
+                <div class="page-title">HORÁRIOS <span>disponíveis</span></div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;">Em construção</div>
+        </div>
+
+        <div class="page" id="page-servicos">
+            <div class="page-title-bar">
+                <button class="btn-voltar" onclick="goTo('home')">← Voltar</button>
+                <div class="page-title">SERVIÇOS <span>disponíveis</span></div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;">Em construção</div>
+        </div>
+
+        <div class="page" id="page-duvidas">
+            <div class="page-title-bar">
+                <button class="btn-voltar" onclick="goTo('home')">← Voltar</button>
+                <div class="page-title">DÚVIDAS <span>frequentes</span></div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;">Em construção</div>
+        </div>
+    </main>
+</div>
+
+<div class="footer-bar">
+    <span>🏠 Dashboard</span>
+</div>
+
+<script>
+    const pages = ['home','catalogos','categorias','horarios','servicos','duvidas'];
+    const headerTexts = {
+        home: { title: 'BEM VINDO', sub: 'Conheça nossos serviços e catálogos' },
+        catalogos: { title: 'CATÁLOGOS', sub: 'Gerencie seus catálogos de produtos' },
+        categorias: { title: 'CATEGORIAS', sub: 'Explore as categorias de produtos' },
+        horarios: { title: 'HORÁRIOS', sub: 'Veja os horários disponíveis' },
+        servicos: { title: 'SERVIÇOS', sub: 'Serviços disponíveis para você' },
+        duvidas: { title: 'DÚVIDAS', sub: 'Perguntas frequentes' },
+    };
+
+    function goTo(page) {
+        pages.forEach(p => {
+            document.getElementById('page-' + p).classList.remove('active');
+            const nav = document.getElementById('nav-' + p);
+            if (nav) nav.classList.remove('active');
+        });
+        
+        document.getElementById('page-' + page).classList.add('active');
+        const nav = document.getElementById('nav-' + page);
+        if (nav) nav.classList.add('active');
+
+        const ht = headerTexts[page] || headerTexts.home;
+        document.getElementById('header-title').textContent = ht.title;
+        document.getElementById('header-sub').textContent = ht.sub;
+    }
+</script>
+{% endblock %}
