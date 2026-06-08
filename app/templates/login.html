@@ -15,9 +15,9 @@
       --gold:       #c8a84b;
       --gold-light: #e8c96a;
       --white:      #f5f0ee;
-      --card-bg:    rgba(15, 5, 5, 0.82);
+      --card-bg:    rgba(15, 5, 5, 0.65); /* Fundo escuro semitransparente como na imagem */
       --input-bg:   transparent;
-      --input-border: rgba(200,168,75,0.5);
+      --input-border: rgba(255,255,255,0.4);
     }
  
     html, body {
@@ -30,7 +30,6 @@
     /* ── BACKGROUND ── */
     .bg {
       position: fixed; inset: 0; z-index: 0;
-      /* SEU CAMINHO DE IMAGEM ADICIONADO AQUI */
       background-image: url('/static/assets/fundo-abstrato.jpg');
       background-size: cover;
       background-position: center;
@@ -40,10 +39,9 @@
       content: '';
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.85) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(122,16,16,0.9) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 70% at 60% 80%, rgba(90,10,10,0.95) 0%, transparent 60%),
-        linear-gradient(135deg, #1a0505 0%, #7a1010 40%, #c0202a 70%, #e05060 100%);
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(122,16,16,0.5) 0%, transparent 65%),
+        linear-gradient(135deg, rgba(26,5,5,0.3) 0%, rgba(122,16,16,0.3) 100%);
     }
     .bg-icons {
       position: fixed; inset: 0; z-index: 1;
@@ -60,93 +58,94 @@
     header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 40px;
+      padding: 30px 50px;
     }
     .logo-placeholder {
-      width: 64px; height: 64px; border-radius: 50%;
+      width: 80px; height: 80px; border-radius: 50%;
       border: 2px solid var(--gold);
       background: rgba(0,0,0,0.5);
       display: flex; align-items: center; justify-content: center;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px; color: var(--gold); letter-spacing: 1px;
+      font-size: 22px; color: var(--gold); letter-spacing: 1px;
     }
     .senai-info { text-align: right; }
     .senai-info .title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(26px, 4vw, 46px);
-      letter-spacing: 3px; line-height: 1;
-      color: var(--white);
-      text-shadow: 2px 2px 12px rgba(0,0,0,0.6);
+      font-size: clamp(32px, 4.5vw, 52px);
+      letter-spacing: 2px; line-height: 0.9;
+      color: #111111; /* Cor escura sólida conforme a imagem */
+      font-weight: bold;
     }
     .senai-info .subtitle {
-      font-size: 10px; font-weight: 300;
-      letter-spacing: 2px; color: rgba(255,255,255,0.75);
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 1px; color: #111111;
       text-transform: uppercase;
+      margin-top: 5px;
     }
  
     /* ── LAYOUT ── */
     .page {
       position: relative; z-index: 10;
       height: 100vh;
-      display: flex; align-items: center;
-      padding: 0 6vw;
-      gap: 8vw;
+      display: flex; 
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8vw;
+      gap: 4vw;
     }
  
     /* esquerda – texto */
     .hero-text {
-      flex: 1; max-width: 460px;
+      flex: 1; max-width: 550px;
+      text-align: left;
     }
     .hero-text .tag {
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 4px; text-transform: uppercase;
-      color: var(--gold-light); margin-bottom: 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--white); margin-bottom: 10px;
     }
     .hero-text h1 {
-      font-size: clamp(20px, 2.8vw, 34px);
-      font-weight: 700; line-height: 1.4;
+      font-size: clamp(24px, 3.2vw, 40px);
+      font-weight: 700; line-height: 1.2;
       color: var(--white);
-      text-shadow: 1px 1px 8px rgba(0,0,0,0.5);
-      margin-bottom: 12px;
+      margin-bottom: 20px;
     }
     .hero-text .brand {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(18px, 2.4vw, 30px);
-      letter-spacing: 4px; color: var(--white);
+      font-size: clamp(22px, 2.8vw, 36px);
+      font-weight: 700; color: var(--white);
     }
     .hero-text .brand-tag {
-      font-size: 10px; letter-spacing: 3px;
-      color: rgba(255,255,255,0.6); text-transform: uppercase;
-      margin-top: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: var(--white); text-transform: uppercase;
+      margin-top: 8px;
     }
  
     /* direita – card login */
     .login-card {
-      flex: 0 0 340px;
+      flex: 0 0 380px;
       background: var(--card-bg);
-      border: 1px solid rgba(200,168,75,0.35);
-      border-radius: 10px;
-      padding: 40px 36px 36px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border: 2px solid #b39246; /* Borda dourada arredondada da imagem */
+      border-radius: 24px;
+      padding: 45px 35px 35px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
       animation: fadeUp 0.7s 0.3s ease both;
     }
     .login-card h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px; letter-spacing: 4px;
-      text-align: center; color: var(--gold-light);
-      margin-bottom: 30px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 28px; font-weight: 600;
+      text-align: center; color: #ffcc33; /* Amarelo/Dourado vivo */
+      margin-bottom: 35px;
     }
  
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     .form-group label {
       display: block;
-      font-size: 12px; letter-spacing: 2px;
-      text-transform: uppercase; color: rgba(255,255,255,0.6);
-      margin-bottom: 6px;
+      font-size: 15px; color: rgba(255,255,255,0.7);
+      margin-bottom: 5px;
     }
     .form-group input {
       width: 100%;
@@ -154,46 +153,48 @@
       border: none; border-bottom: 1px solid var(--input-border);
       color: var(--white);
       font-family: 'Barlow', sans-serif;
-      font-size: 15px;
-      padding: 8px 2px;
+      font-size: 16px;
+      padding: 6px 0;
       outline: none;
       transition: border-color 0.2s;
     }
-    .form-group input::placeholder { color: rgba(255,255,255,0.3); }
-    .form-group input:focus { border-color: var(--gold); }
+    .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+    .form-group input:focus { border-color: #ffcc33; }
  
     .btn-entrar {
-      width: 100%; margin-top: 28px;
-      padding: 13px;
-      background: var(--gold);
-      color: #1a0505;
-      border: none; border-radius: 4px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px; letter-spacing: 4px;
+      width: 100%; margin-top: 20px;
+      padding: 12px;
+      /* Gradiente dourado 3D realista igual ao botão da foto */
+      background: linear-gradient(to bottom, #e5b842 0%, #b3861b 100%);
+      color: #ffffff;
+      border: none; 
+      border-radius: 50px; /* Formato pílula idêntico à imagem */
+      font-family: 'Barlow', sans-serif;
+      font-size: 22px; font-weight: 700;
       cursor: pointer;
-      transition: all 0.25s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.2s;
     }
     .btn-entrar:hover {
-      background: var(--gold-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      background: linear-gradient(to bottom, #ffd769 0%, #ca9924 100%);
+      transform: translateY(-1px);
     }
  
     .back-link {
       display: block; text-align: center;
-      margin-top: 16px;
-      font-size: 12px; color: rgba(255,255,255,0.4);
-      text-decoration: none; letter-spacing: 1px;
+      margin-top: 20px;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      text-decoration: none;
       transition: color 0.2s;
     }
-    .back-link:hover { color: var(--gold-light); }
+    .back-link:hover { color: #ffcc33; }
  
     /* ── FOOTER ── */
     footer {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      text-align: center; padding: 12px;
-      font-size: 10px; letter-spacing: 2px;
-      color: rgba(255,255,255,0.35); text-transform: uppercase;
+      text-align: center; padding: 15px;
+      font-size: 11px; letter-spacing: 1px;
+      color: rgba(255,255,255,0.4); text-transform: uppercase;
     }
  
     @keyframes fadeUp {
@@ -205,6 +206,14 @@
     .hero-text h1           { animation-delay: 0.25s; }
     .hero-text .brand       { animation-delay: 0.4s; }
     .hero-text .brand-tag  { animation-delay: 0.5s; }
+
+    /* Responsividade básica para telas móveis */
+    @media (max-width: 850px) {
+      .page { flex-direction: column; justify-content: center; padding-top: 120px; gap: 30px; }
+      header { padding: 15px 25px; }
+      .senai-info .title { font-size: 32px; }
+      .login-card { flex: 1 0 auto; width: 100%; max-width: 360px; }
+    }
   </style>
 </head>
 <body>
@@ -247,20 +256,21 @@
     </div>
  
     <div class="login-card">
-      <h2>Login</h2>
+      <h2>Login Administrativo</h2>
       <form action="/login" method="POST">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="seu@email.com" required/>
+          <input type="email" id="email" name="email" placeholder="Digite seu email" required/>
         </div>
 
         <div class="form-group">
           <label for="senha">Senha</label>
-          <input type="password" id="senha" name="senha" placeholder="••••••••" required/>
+          <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required/>
         </div>
+        
         <button type="submit" class="btn-entrar">Entrar</button>
       </form>
-      <a href="base" class="back-link">← Voltar ao início</a>
+      <a href="/" class="back-link">← Voltar ao início</a>
     </div>
   </main>
  

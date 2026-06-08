@@ -3,353 +3,324 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catálogo – AAPM</title>
+  <title>Dashboard Premium – AAPM</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
  
     :root {
       --red-dark:   #1a0505;
       --red-mid:    #7a1010;
-      --red-vivid:  #c0202a;
+      --white:      #f5f0ee;
       --gold:       #c8a84b;
       --gold-light: #e8c96a;
-      --white:      #f5f0ee;
-      --card-bg:    rgba(15,4,4,0.7);
+      --topbar-bg:  rgba(20, 20, 19, 0.85);
+      --sidebar-bg: rgba(15, 12, 12, 0.75);
     }
  
     html, body {
-      height: 100%; overflow-x: hidden;
+      height: 100%;
       font-family: 'Barlow', sans-serif;
       color: var(--white);
+      overflow: hidden;
+      perspective: 1000px; /* Base para o efeito 3D da GSAP */
     }
  
     /* ── BACKGROUND ── */
     .bg {
       position: fixed; inset: 0; z-index: 0;
-      background-image: url('SUA_IMAGEM_DE_FUNDO_AQUI');
-      background-size: cover; background-position: center;
+      background-image: url('/static/assets/fundo-abstrato.jpg');
+      background-size: cover; 
+      background-position: center;
       background-color: var(--red-mid);
     }
     .bg::before {
       content: '';
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.8) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(122,16,16,0.85) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 70% at 60% 80%, rgba(90,10,10,0.9) 0%, transparent 60%),
-        linear-gradient(135deg, #1a0505 0%, #7a1010 40%, #c0202a 70%, #e05060 100%);
-    }
-    .bg-icons {
-      position: fixed; inset: 0; z-index: 1;
-      pointer-events: none; overflow: hidden;
-    }
-    .bg-icons span {
-      position: absolute;
-      font-size: clamp(24px, 3vw, 48px);
-      color: rgba(255,255,255,0.06);
-      transform: rotate(-15deg);
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(122,16,16,0.3) 0%, transparent 65%),
+        linear-gradient(135deg, rgba(26,5,5,0.4) 0%, rgba(122,16,16,0.2) 100%);
     }
  
-    /* ── HEADER ── */
+    /* ── TOPBAR HEADER ── */
     header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 85px;
+      background-color: var(--topbar-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 40px;
-      background: rgba(15,4,4,0.55);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(200,168,75,0.15);
+      padding: 0 40px;
+      border-bottom: 1px solid rgba(200, 168, 75, 0.2);
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transform: translateY(-100%); /* Começa escondido para a GSAP animar */
+    }
+    .welcome-box h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px; font-weight: 400;
+      color: var(--gold-light); 
+      letter-spacing: 2px;
+    }
+    .welcome-box p {
+      font-size: 13px; font-weight: 400;
+      color: rgba(255,255,255,0.7);
+      margin-top: -2px;
+    }
+    .logo-container {
+      position: absolute; left: 50%; transform: translateX(-50%);
     }
     .logo-placeholder {
       width: 56px; height: 56px; border-radius: 50%;
       border: 2px solid var(--gold);
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.6);
       display: flex; align-items: center; justify-content: center;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 16px; color: var(--gold);
-    }
-    .header-center {
-      text-align: center;
-    }
-    .header-center h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(18px, 2.5vw, 30px);
-      letter-spacing: 5px; color: var(--gold-light);
-    }
-    .header-center p {
-      font-size: 11px; letter-spacing: 2px;
-      color: rgba(255,255,255,0.5); text-transform: uppercase;
-    }
-    .senai-info { text-align: right; }
-    .senai-info .title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(20px, 3vw, 36px);
-      letter-spacing: 3px; line-height: 1;
-      color: var(--white);
-    }
-    .senai-info .subtitle {
-      font-size: 9px; font-weight: 300; letter-spacing: 2px;
-      color: rgba(255,255,255,0.6); text-transform: uppercase;
+      box-shadow: 0 0 15px rgba(200, 168, 75, 0.3);
     }
  
-    /* ── PAGE ── */
-    .page {
+    /* ── MAIN CONTENT WRAPPER ── */
+    .dashboard-container {
       position: relative; z-index: 10;
-      padding: 120px 6vw 80px;
+      height: 100vh;
+      padding-top: 85px;
+      display: flex;
     }
  
-    /* hero section */
-    .page-hero {
-      display: flex; align-items: flex-start;
-      gap: 8vw; margin-bottom: 60px;
+    /* ── SIDEBAR MENU ── */
+    nav.sidebar {
+      width: 220px;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      margin: 30px 0 30px 30px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex; flex-direction: column;
+      padding: 30px 15px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      transform: translateX(-150%); /* Começa escondido para a GSAP animar */
     }
-    .hero-text { flex: 1; max-width: 480px; }
-    .hero-text .tag {
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 4px; text-transform: uppercase;
-      color: var(--gold-light); margin-bottom: 14px;
-    }
-    .hero-text h2 {
-      font-size: clamp(20px, 2.8vw, 34px);
-      font-weight: 700; line-height: 1.4;
-      color: var(--white);
-      text-shadow: 1px 1px 8px rgba(0,0,0,0.5);
-      margin-bottom: 12px;
-    }
-    .hero-text .brand {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(18px, 2.4vw, 30px);
-      letter-spacing: 4px; color: var(--white);
-    }
-    .hero-text .brand-tag {
-      font-size: 10px; letter-spacing: 3px;
-      color: rgba(255,255,255,0.5); margin-top: 4px;
-    }
-    .hero-text .btn-login {
-      display: inline-block; margin-top: 28px;
-      padding: 12px 32px;
-      background: var(--gold); color: #1a0505;
-      border-radius: 4px; text-decoration: none;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px; letter-spacing: 3px;
-      transition: all 0.25s;
-    }
-    .hero-text .btn-login:hover {
-      background: var(--gold-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
- 
-    /* ── CATÁLOGO GRID ── */
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px; letter-spacing: 4px;
-      color: var(--gold); margin-bottom: 20px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(200,168,75,0.25);
-    }
- 
-    .catalogo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .produto-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(200,168,75,0.15);
-      border-radius: 10px;
-      overflow: hidden;
-      backdrop-filter: blur(8px);
-      transition: all 0.3s;
-      animation: fadeUp 0.6s ease both;
-    }
-    .produto-card:hover {
-      border-color: var(--gold);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
-    }
-    .produto-card .card-img {
-      width: 100%; height: 140px;
-      background: rgba(0,0,0,0.4);
-      /* Espaço para imagem do produto */
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.2);
-      text-transform: uppercase;
-    }
-    .produto-card .card-info {
-      padding: 16px;
-    }
-    .produto-card .card-info h3 {
+    .sidebar .menu-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 18px; letter-spacing: 2px;
-      color: var(--white); margin-bottom: 6px;
+      color: var(--gold); 
+      margin-bottom: 25px; 
+      padding-left: 12px;
     }
-    .produto-card .card-info p {
-      font-size: 12px; color: rgba(255,255,255,0.55);
-      line-height: 1.5; margin-bottom: 10px;
+    .sidebar ul {
+      list-style: none; display: flex; flex-direction: column; gap: 8px;
     }
-    .produto-card .card-info .preco {
+    .sidebar ul li {
+      opacity: 0; /* Controlado pelo stagger da GSAP */
+      transform: translateX(-20px);
+    }
+    .sidebar ul li a {
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      transition: all 0.25s ease;
+    }
+    .sidebar ul li a:hover {
+      color: #1a0505;
+      background: var(--gold);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(200, 168, 75, 0.3);
+    }
+    .sidebar .logout-link {
+      margin-top: auto; 
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 14px; font-weight: 600;
+      border-radius: 12px;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+    .sidebar .logout-link:hover { 
+      color: #fff; 
+      background: rgba(211, 47, 47, 0.4); 
+    }
+ 
+    /* ── BANNER CENTRAL AREA ── */
+    main.main-content {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px;
+    }
+    
+    .promo-card {
+      display: flex;
+      width: 100%; max-width: 680px; height: 340px;
+      background-color: #0d0605;
+      border-radius: 28px;
+      border: 1px solid rgba(200, 168, 75, 0.25);
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      opacity: 0;
+      transform: scale(0.9); /* Início da animação GSAP */
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    
+    .promo-img-side {
+      width: 45%;
+      background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .promo-img-side::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 50%, #0d0605 100%);
+    }
+    
+    .promo-text-side {
+      width: 55%;
+      padding: 40px;
+      display: flex; flex-direction: column; justify-content: center;
+      transform: translateZ(30px); /* Dá profundidade real aos textos no efeito 3D */
+    }
+    .promo-text-side h2 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px; letter-spacing: 2px; color: var(--gold-light);
+      font-weight: 400; font-size: 42px;
+      line-height: 1.0; letter-spacing: 2px;
+      color: var(--white);
+      margin-bottom: 16px;
     }
-    .produto-card .card-info .categoria {
-      display: inline-block; margin-top: 8px;
-      font-size: 9px; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--gold);
-      border: 1px solid rgba(200,168,75,0.4);
-      border-radius: 3px; padding: 2px 8px;
+    .promo-text-side .author {
+      font-size: 20px; font-weight: 700;
+      color: var(--gold-light); margin-bottom: 4px;
     }
- 
-    /* nth delays */
-    .produto-card:nth-child(1) { animation-delay: 0.05s; }
-    .produto-card:nth-child(2) { animation-delay: 0.12s; }
-    .produto-card:nth-child(3) { animation-delay: 0.19s; }
-    .produto-card:nth-child(4) { animation-delay: 0.26s; }
-    .produto-card:nth-child(5) { animation-delay: 0.33s; }
-    .produto-card:nth-child(6) { animation-delay: 0.40s; }
- 
-    /* ── FOOTER ── */
-    footer {
-      position: relative; z-index: 10;
-      text-align: center; padding: 24px;
-      font-size: 10px; letter-spacing: 2px;
-      color: rgba(255,255,255,0.35); text-transform: uppercase;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      margin-top: 40px;
+    .promo-text-side .social-tag {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      font-weight: 400;
     }
  
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ── BOTTOM INDICATOR BAR ── */
+    .bottom-indicator {
+      position: fixed; bottom: 25px; right: 30px;
+      background: rgba(20, 20, 19, 0.8);
+      border: 1px solid rgba(200,168,75,0.2);
+      backdrop-filter: blur(8px);
+      padding: 8px 20px; border-radius: 50px;
+      font-size: 12px; font-weight: 600; color: var(--gold-light);
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      z-index: 100;
+      transform: translateY(100px);
     }
-    .page-hero > * { animation: fadeUp 0.8s ease both; }
-    .page-hero > *:nth-child(1) { animation-delay: 0.1s; }
+
+    /* Responsividade */
+    @media (max-width: 900px) {
+      .dashboard-container { flex-direction: column; padding-top: 85px; overflow-y: auto; }
+      nav.sidebar { width: auto; margin: 20px; height: auto; }
+      nav.sidebar ul { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .promo-card { flex-direction: column; height: auto; max-width: 450px; margin-bottom: 50px; }
+      .promo-img-side { width: 100%; height: 200px; }
+      .promo-img-side::after { background: linear-gradient(to bottom, transparent 50%, #0d0605 100%); }
+      .promo-text-side { width: 100%; text-align: center; padding: 30px; }
+    }
   </style>
 </head>
 <body>
  
   <div class="bg"></div>
-  <div class="bg-icons">
-    <span style="top:15%;left:5%">⊞</span>
-    <span style="top:35%;left:3%">⊟</span>
-    <span style="top:55%;left:6%">⊠</span>
-    <span style="top:75%;left:4%">⊡</span>
-    <span style="top:20%;right:12%">⛶</span>
-    <span style="top:50%;right:5%">◎</span>
-    <span style="top:70%;right:8%">⊕</span>
-    <span style="top:80%;right:15%">⊗</span>
-    <span style="top:10%;left:45%">✦</span>
-    <span style="top:65%;left:35%">❖</span>
-  </div>
  
-  <!-- HEADER -->
-  <header>
-    <div>
-      <!--
-        <img src="URL_DA_LOGO_AAPM" alt="AAPM" style="width:56px;height:56px;border-radius:50%;border:2px solid #c8a84b;"/>
-      -->
+  <header id="topbar">
+    <div class="welcome-box">
+      <h1>BEM VINDO</h1>
+      <p>Conheça nossos serviços e catálogos</p>
+    </div>
+    
+    <div class="logo-container">
       <div class="logo-placeholder">AAPM</div>
     </div>
-    <div class="header-center">
-      <h1>CATÁLOGO</h1>
-      <p>Produtos e serviços AAPM</p>
-    </div>
-    <div class="senai-info">
-      <div class="title">SENAI<br>BRÁS-SP</div>
-      <div class="subtitle">Rua Correia de Andrade 232</div>
-    </div>
+    
+    <div style="width: 100px;"></div>
   </header>
  
-  <!-- CONTEÚDO -->
-  <div class="page">
+  <div class="dashboard-container">
+    
+    <nav class="sidebar" id="sidebar">
+      <div class="menu-title">Navegação</div>
+      <ul>
+        <li class="menu-item"><a href="#catalogos">📊 <span>Catálogos</span></a></li>
+        <li class="menu-item"><a href="#categorias">🏷️ <span>Categorias</span></a></li>
+        <li class="menu-item"><a href="#horarios">🕒 <span>Horários</span></a></li>
+        <li class="menu-item"><a href="#servicos">🛠️ <span>Serviços disponíveis</span></a></li>
+        <li class="menu-item"><a href="#duvidas">💡 <span>Dúvidas</span></a></li>
+      </ul>
+      <a href="/" class="logout-link" id="logout">🚪 <span>Sair</span></a>
+    </nav>
  
-    <!-- Hero intro -->
-    <div class="page-hero">
-      <div class="hero-text">
-        <p class="tag">SENAI</p>
-        <h2>
-          Acesse o site da AAPM e<br>
-          descubra sobre nossos<br>
-          produtos com praticidade e<br>
-          rapidez.
-        </h2>
-        <div class="brand">Compre e agende com a AAPM</div>
-        <div class="brand-tag">AAPM</div>
-        <a href="/login" class="btn-login">Fazer Login Administrativo</a>
-      </div>
-    </div>
- 
-    <!-- Grid de produtos/catálogo -->
-    <div class="section-title">Nossos Produtos</div>
-    <div class="catalogo-grid" id="catalogo">
- 
-      <!-- Os produtos abaixo são exemplos — substitua pelos dados reais da sua rota -->
-      <div class="produto-card">
-        <div class="card-img">Imagem do Produto</div>
-        <div class="card-info">
-          <h3>Produto 01</h3>
-          <p>Descrição breve do produto ou serviço disponível.</p>
-          <div class="preco">R$ 00,00</div>
-          <span class="categoria">Categoria</span>
+    <main class="main-content">
+      <div class="promo-card" id="promoCard">
+        <div class="promo-img-side"></div>
+        <div class="promo-text-side">
+          <h2>Inovação<br>Tecnológica</h2>
+          <p class="author">Senai-SP</p>
+          <p class="social-tag">Instagram: @senaitextilemoda</p>
         </div>
       </div>
- 
-      <div class="produto-card">
-        <div class="card-img">Imagem do Produto</div>
-        <div class="card-info">
-          <h3>Produto 02</h3>
-          <p>Descrição breve do produto ou serviço disponível.</p>
-          <div class="preco">R$ 00,00</div>
-          <span class="categoria">Categoria</span>
-        </div>
-      </div>
- 
-      <div class="produto-card">
-        <div class="card-img">Imagem do Produto</div>
-        <div class="card-info">
-          <h3>Produto 03</h3>
-          <p>Descrição breve do produto ou serviço disponível.</p>
-          <div class="preco">R$ 00,00</div>
-          <span class="categoria">Categoria</span>
-        </div>
-      </div>
- 
-      <div class="produto-card">
-        <div class="card-img">Imagem do Produto</div>
-        <div class="card-info">
-          <h3>Produto 04</h3>
-          <p>Descrição breve do produto ou serviço disponível.</p>
-          <div class="preco">R$ 00,00</div>
-          <span class="categoria">Categoria</span>
-        </div>
-      </div>
- 
-      <div class="produto-card">
-        <div class="card-img">Imagem do Produto</div>
-        <div class="card-info">
-          <h3>Produto 05</h3>
-          <p>Descrição breve do produto ou serviço disponível.</p>
-          <div class="preco">R$ 00,00</div>
-          <span class="categoria">Categoria</span>
-        </div>
-      </div>
- 
-      <div class="produto-card">
-        <div class="card-img">Imagem do Produto</div>
-        <div class="card-info">
-          <h3>Produto 06</h3>
-          <p>Descrição breve do produto ou serviço disponível.</p>
-          <div class="preco">R$ 00,00</div>
-          <span class="categoria">Categoria</span>
-        </div>
-      </div>
- 
-    </div>
-    <!-- fim grid -->
- 
+    </main>
+    
   </div>
  
-  <footer>AAPM &nbsp;·&nbsp; SENAI Brás-SP &nbsp;·&nbsp; Têxtil e Moda</footer>
- 
+  <div class="bottom-indicator" id="badge">
+    <span>🛡️ Painel Administrativo Ativo</span>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Linha do tempo para a animação de entrada (Intro)
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      tl.to("#topbar", { translateY: 0, duration: 1 })
+        .to("#sidebar", { translateX: 0, duration: 1 }, "-=0.7")
+        .to(".menu-item", { opacity: 1, translateX: 0, duration: 0.5, stagger: 0.15 }, "-=0.6")
+        .to("#logout", { opacity: 1, duration: 0.4 }, "-=0.2")
+        .to("#promoCard", { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.2)" }, "-=0.6")
+        .to("#badge", { translateY: 0, duration: 0.5 }, "-=0.4");
+
+
+      // 2. Efeito Magnético 3D Inteligente (Mouse Move Parallax)
+      const card = document.getElementById("promoCard");
+      
+      // Roda apenas em telas maiores (Desktops) para evitar quebras no mobile
+      if (window.innerWidth > 900) {
+        document.addEventListener("mousemove", (e) => {
+          const xAxis = (window.innerWidth / 2 - e.pageX) / 35; // Intensidade do giro horizontal
+          const yAxis = (window.innerHeight / 2 - e.pageY) / 35; // Intensidade do giro vertical
+          
+          gsap.to(card, {
+            rotationY: xAxis,
+            rotationX: -yAxis,
+            duration: 0.5,
+            ease: "power2.out"
+          });
+        });
+
+        // Reseta a posição do card perfeitamente quando o mouse sai da tela
+        document.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            rotationY: 0,
+            rotationX: 0,
+            duration: 0.8,
+            ease: "power3.out"
+          });
+        });
+      }
+    });
+  </script>
 </body>
 </html>
