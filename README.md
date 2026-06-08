@@ -17,3 +17,6 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 # tirar bugs
 python -m uvicorn app.main:app --reload --log-level debug
+
+Email: admin@senai.com
+Senha: senai123
