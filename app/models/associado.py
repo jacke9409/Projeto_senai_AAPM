@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, Boolean
-from app.database import Base
+from database import Base
 
 class Associado(Base):
     __tablename__ = "associados"

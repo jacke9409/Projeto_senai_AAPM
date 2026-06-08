@@ -1,155 +1,355 @@
-{% extends "base.html" %}
-
-{% block title %}AAPM – Visualizar Acervo{% endblock %}
-
-{% block extra_css %}
-<style>
-    .headline {
-        margin-top: 60px;
-        max-width: 680px;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo – AAPM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --red-dark:   #1a0505;
+      --red-mid:    #7a1010;
+      --red-vivid:  #c0202a;
+      --gold:       #c8a84b;
+      --gold-light: #e8c96a;
+      --white:      #f5f0ee;
+      --card-bg:    rgba(15,4,4,0.7);
     }
-    .headline h1 {
-        font-family: 'Cormorant Garamond', serif;
-        font-size: clamp(2rem, 4.2vw, 3.6rem);
-        font-weight: 600;
-        line-height: 1.18;
-        color: #F5EDE5;
-        text-shadow: 0 2px 32px rgba(0,0,0,0.7);
-        letter-spacing: 0.01em;
+ 
+    html, body {
+      height: 100%; overflow-x: hidden;
+      font-family: 'Barlow', sans-serif;
+      color: var(--white);
     }
-    .headline p {
-        margin-top: 14px;
-        font-size: 13px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--silver);
+ 
+    /* ── BACKGROUND ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url('SUA_IMAGEM_DE_FUNDO_AQUI');
+      background-size: cover; background-position: center;
+      background-color: var(--red-mid);
     }
-
-    .actions {
-        position: absolute;
-        bottom: 56px;
-        right: 48px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        z-index: 25;
+    .bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.8) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(122,16,16,0.85) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 70% at 60% 80%, rgba(90,10,10,0.9) 0%, transparent 60%),
+        linear-gradient(135deg, #1a0505 0%, #7a1010 40%, #c0202a 70%, #e05060 100%);
     }
-
-    .btn {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 14px 22px;
-        border-radius: 8px;
-        cursor: pointer;
-        text-decoration: none;
-        font-family: 'Josefin Sans', sans-serif;
-        font-size: 13px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        border: none;
-        outline: none;
+    .bg-icons {
+      position: fixed; inset: 0; z-index: 1;
+      pointer-events: none; overflow: hidden;
     }
-    .btn:hover { transform: translateY(-2px); }
-
-    .btn--primary {
-        background: var(--glass-bg);
-        backdrop-filter: blur(14px);
-        border: 1px solid var(--glass-border);
-        color: var(--cream);
-        box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+    .bg-icons span {
+      position: absolute;
+      font-size: clamp(24px, 3vw, 48px);
+      color: rgba(255,255,255,0.06);
+      transform: rotate(-15deg);
     }
-    .btn--primary:hover {
-        background: rgba(107, 30, 46, 0.55);
-        box-shadow: 0 8px 32px rgba(107,30,46,0.4);
+ 
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(15,4,4,0.55);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(200,168,75,0.15);
     }
-
-    .btn--secondary {
-        background: rgba(25, 18, 18, 0.4);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(155, 160, 168, 0.2);
-        color: var(--silver);
+    .logo-placeholder {
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px; color: var(--gold);
     }
-    .btn--secondary:hover {
-        background: rgba(40, 30, 30, 0.6);
-        color: var(--cream);
+    .header-center {
+      text-align: center;
     }
-
-    .btn__avatar {
-        width: 34px; height: 34px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--burgundy), var(--copper));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 700;
-        color: #fff;
-        flex-shrink: 0;
-        box-shadow: 0 0 0 2px rgba(160,82,45,0.4);
+    .header-center h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(18px, 2.5vw, 30px);
+      letter-spacing: 5px; color: var(--gold-light);
     }
-
-    .produtos-grid {
-        margin-top: 48px;
-        color: var(--cream);
-        max-width: 800px;
+    .header-center p {
+      font-size: 11px; letter-spacing: 2px;
+      color: rgba(255,255,255,0.5); text-transform: uppercase;
     }
-    .produtos-grid p {
-        font-size: 14px;
-        letter-spacing: 0.1em;
-        margin-bottom: 20px;
+    .senai-info { text-align: right; }
+    .senai-info .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(20px, 3vw, 36px);
+      letter-spacing: 3px; line-height: 1;
+      color: var(--white);
     }
-    .grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;
+    .senai-info .subtitle {
+      font-size: 9px; font-weight: 300; letter-spacing: 2px;
+      color: rgba(255,255,255,0.6); text-transform: uppercase;
+    }
+ 
+    /* ── PAGE ── */
+    .page {
+      position: relative; z-index: 10;
+      padding: 120px 6vw 80px;
+    }
+ 
+    /* hero section */
+    .page-hero {
+      display: flex; align-items: flex-start;
+      gap: 8vw; margin-bottom: 60px;
+    }
+    .hero-text { flex: 1; max-width: 480px; }
+    .hero-text .tag {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold-light); margin-bottom: 14px;
+    }
+    .hero-text h2 {
+      font-size: clamp(20px, 2.8vw, 34px);
+      font-weight: 700; line-height: 1.4;
+      color: var(--white);
+      text-shadow: 1px 1px 8px rgba(0,0,0,0.5);
+      margin-bottom: 12px;
+    }
+    .hero-text .brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(18px, 2.4vw, 30px);
+      letter-spacing: 4px; color: var(--white);
+    }
+    .hero-text .brand-tag {
+      font-size: 10px; letter-spacing: 3px;
+      color: rgba(255,255,255,0.5); margin-top: 4px;
+    }
+    .hero-text .btn-login {
+      display: inline-block; margin-top: 28px;
+      padding: 12px 32px;
+      background: var(--gold); color: #1a0505;
+      border-radius: 4px; text-decoration: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; letter-spacing: 3px;
+      transition: all 0.25s;
+    }
+    .hero-text .btn-login:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+ 
+    /* ── CATÁLOGO GRID ── */
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px; letter-spacing: 4px;
+      color: var(--gold); margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(200,168,75,0.25);
+    }
+ 
+    .catalogo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
     }
     .produto-card {
-        background: rgba(255,255,255,0.1);
-        border-radius: 12px;
-        padding: 20px;
-        width: 200px;
-        text-align: center;
-        transition: transform 0.2s;
+      background: var(--card-bg);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
+      animation: fadeUp 0.6s ease both;
     }
     .produto-card:hover {
-        transform: translateY(-5px);
-        background: rgba(255,255,255,0.15);
+      border-color: var(--gold);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
     }
-    .produto-card p {
-        margin: 0;
-        font-weight: bold;
+    .produto-card .card-img {
+      width: 100%; height: 140px;
+      background: rgba(0,0,0,0.4);
+      /* Espaço para imagem do produto */
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
     }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="headline">
-    <h1>Acervo<br>de Instrumentos</h1>
-    <p>Explore nossa coleção de alfaias e percussão</p>
-</div>
-
-<div class="actions">
-    <a href="/" class="btn btn--primary">
-        <span class="btn__avatar">🔐</span>
-        <span>ÁREA ADMIN</span>
-    </a>
-</div>
-
-<div class="produtos-grid">
-    <p>🎵 Conheça nossa coleção:</p>
-    <div class="grid">
-        <div class="produto-card">
-            <p>🥁 Instrumento 1</p>
-        </div>
-        <div class="produto-card">
-            <p>🎸 Instrumento 2</p>
-        </div>
-        <div class="produto-card">
-            <p>🎹 Instrumento 3</p>
-        </div>
+    .produto-card .card-info {
+      padding: 16px;
+    }
+    .produto-card .card-info h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; letter-spacing: 2px;
+      color: var(--white); margin-bottom: 6px;
+    }
+    .produto-card .card-info p {
+      font-size: 12px; color: rgba(255,255,255,0.55);
+      line-height: 1.5; margin-bottom: 10px;
+    }
+    .produto-card .card-info .preco {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: 2px; color: var(--gold-light);
+    }
+    .produto-card .card-info .categoria {
+      display: inline-block; margin-top: 8px;
+      font-size: 9px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gold);
+      border: 1px solid rgba(200,168,75,0.4);
+      border-radius: 3px; padding: 2px 8px;
+    }
+ 
+    /* nth delays */
+    .produto-card:nth-child(1) { animation-delay: 0.05s; }
+    .produto-card:nth-child(2) { animation-delay: 0.12s; }
+    .produto-card:nth-child(3) { animation-delay: 0.19s; }
+    .produto-card:nth-child(4) { animation-delay: 0.26s; }
+    .produto-card:nth-child(5) { animation-delay: 0.33s; }
+    .produto-card:nth-child(6) { animation-delay: 0.40s; }
+ 
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 10;
+      text-align: center; padding: 24px;
+      font-size: 10px; letter-spacing: 2px;
+      color: rgba(255,255,255,0.35); text-transform: uppercase;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 40px;
+    }
+ 
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .page-hero > * { animation: fadeUp 0.8s ease both; }
+    .page-hero > *:nth-child(1) { animation-delay: 0.1s; }
+  </style>
+</head>
+<body>
+ 
+  <div class="bg"></div>
+  <div class="bg-icons">
+    <span style="top:15%;left:5%">⊞</span>
+    <span style="top:35%;left:3%">⊟</span>
+    <span style="top:55%;left:6%">⊠</span>
+    <span style="top:75%;left:4%">⊡</span>
+    <span style="top:20%;right:12%">⛶</span>
+    <span style="top:50%;right:5%">◎</span>
+    <span style="top:70%;right:8%">⊕</span>
+    <span style="top:80%;right:15%">⊗</span>
+    <span style="top:10%;left:45%">✦</span>
+    <span style="top:65%;left:35%">❖</span>
+  </div>
+ 
+  <!-- HEADER -->
+  <header>
+    <div>
+      <!--
+        <img src="URL_DA_LOGO_AAPM" alt="AAPM" style="width:56px;height:56px;border-radius:50%;border:2px solid #c8a84b;"/>
+      -->
+      <div class="logo-placeholder">AAPM</div>
     </div>
-</div>
-{% endblock %}
+    <div class="header-center">
+      <h1>CATÁLOGO</h1>
+      <p>Produtos e serviços AAPM</p>
+    </div>
+    <div class="senai-info">
+      <div class="title">SENAI<br>BRÁS-SP</div>
+      <div class="subtitle">Rua Correia de Andrade 232</div>
+    </div>
+  </header>
+ 
+  <!-- CONTEÚDO -->
+  <div class="page">
+ 
+    <!-- Hero intro -->
+    <div class="page-hero">
+      <div class="hero-text">
+        <p class="tag">SENAI</p>
+        <h2>
+          Acesse o site da AAPM e<br>
+          descubra sobre nossos<br>
+          produtos com praticidade e<br>
+          rapidez.
+        </h2>
+        <div class="brand">Compre e agende com a AAPM</div>
+        <div class="brand-tag">AAPM</div>
+        <a href="/login" class="btn-login">Fazer Login Administrativo</a>
+      </div>
+    </div>
+ 
+    <!-- Grid de produtos/catálogo -->
+    <div class="section-title">Nossos Produtos</div>
+    <div class="catalogo-grid" id="catalogo">
+ 
+      <!-- Os produtos abaixo são exemplos — substitua pelos dados reais da sua rota -->
+      <div class="produto-card">
+        <div class="card-img">Imagem do Produto</div>
+        <div class="card-info">
+          <h3>Produto 01</h3>
+          <p>Descrição breve do produto ou serviço disponível.</p>
+          <div class="preco">R$ 00,00</div>
+          <span class="categoria">Categoria</span>
+        </div>
+      </div>
+ 
+      <div class="produto-card">
+        <div class="card-img">Imagem do Produto</div>
+        <div class="card-info">
+          <h3>Produto 02</h3>
+          <p>Descrição breve do produto ou serviço disponível.</p>
+          <div class="preco">R$ 00,00</div>
+          <span class="categoria">Categoria</span>
+        </div>
+      </div>
+ 
+      <div class="produto-card">
+        <div class="card-img">Imagem do Produto</div>
+        <div class="card-info">
+          <h3>Produto 03</h3>
+          <p>Descrição breve do produto ou serviço disponível.</p>
+          <div class="preco">R$ 00,00</div>
+          <span class="categoria">Categoria</span>
+        </div>
+      </div>
+ 
+      <div class="produto-card">
+        <div class="card-img">Imagem do Produto</div>
+        <div class="card-info">
+          <h3>Produto 04</h3>
+          <p>Descrição breve do produto ou serviço disponível.</p>
+          <div class="preco">R$ 00,00</div>
+          <span class="categoria">Categoria</span>
+        </div>
+      </div>
+ 
+      <div class="produto-card">
+        <div class="card-img">Imagem do Produto</div>
+        <div class="card-info">
+          <h3>Produto 05</h3>
+          <p>Descrição breve do produto ou serviço disponível.</p>
+          <div class="preco">R$ 00,00</div>
+          <span class="categoria">Categoria</span>
+        </div>
+      </div>
+ 
+      <div class="produto-card">
+        <div class="card-img">Imagem do Produto</div>
+        <div class="card-info">
+          <h3>Produto 06</h3>
+          <p>Descrição breve do produto ou serviço disponível.</p>
+          <div class="preco">R$ 00,00</div>
+          <span class="categoria">Categoria</span>
+        </div>
+      </div>
+ 
+    </div>
+    <!-- fim grid -->
+ 
+  </div>
+ 
+  <footer>AAPM &nbsp;·&nbsp; SENAI Brás-SP &nbsp;·&nbsp; Têxtil e Moda</footer>
+ 
+</body>
+</html>

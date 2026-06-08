@@ -1,74 +1,44 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import RedirectResponse, HTMLResponse
+import os
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import os
 
-app = FastAPI()
+# Inicializa o FastAPI
+app = FastAPI(title="Projeto SENAI AAPM")
 
-# Caminhos
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # pasta app/
-ROOT_DIR = os.path.dirname(BASE_DIR)  # pasta raiz do projeto
+# Descobre o caminho correto das pastas dentro de 'app'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ⚠️ CORREÇÃO: Static está dentro de app/static, não na raiz!
-static_dir = os.path.join(BASE_DIR, "static")  # ← AGORA aponta para app/static
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# Configura os Templates e os Arquivos Estáticos com segurança
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
-# Templates (pasta raiz)
-templates_dir = os.path.join(ROOT_DIR, "templates")
-templates = Jinja2Templates(directory=templates_dir)
-
-
-def render(template_name: str, request: Request, extra_context: dict = None):
-    context = {"request": request}
-    if extra_context:
-        context.update(extra_context)
-    return templates.TemplateResponse(
-        request=request,
-        name=f"auth/{template_name}",
-        context=context
-    )
+# Monta a pasta de arquivos estáticos (CSS, Imagens, SVGs)
+static_path = os.path.join(BASE_DIR, "static")
+if os.path.exists(static_path):
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
 
 
-# =====================================================
-# ROTAS
-# =====================================================
+# ── ROTAS DO SISTEMA ──
 
-@app.get("/", response_class=HTMLResponse)
-def pagina_login(request: Request):
-    return render("index.html", request)
-
-
-@app.get("/visualizacao", response_class=HTMLResponse)
-def pagina_visualizacao(request: Request):
-    return render("visualizacao.html", request)
+# 1. Rota Raiz (Página Inicial da AAPM - Base)
+@app.get("/")
+async def home(request: Request):
+    return templates.TemplateResponse(request=request, name="base.html")
 
 
-@app.get("/dashboard", response_class=HTMLResponse)
-def pagina_dashboard(request: Request):
-    return render("dashboard.html", request)
+# 2. Rota de Login (Index do fluxo de autenticação)
+@app.get("/login")
+async def login(request: Request):
+    return templates.TemplateResponse(request=request, name="login.html")
 
 
-@app.post("/auth/login")
-async def fazer_login(
-    request: Request,
-    username: str = Form(...),
-    senha: str = Form(...)
-):
-    ADMIN_EMAIL = "admin@aapm.com"
-    ADMIN_SENHA = "123456"
-    
-    if username == ADMIN_EMAIL and senha == ADMIN_SENHA:
-        return RedirectResponse(url="/dashboard", status_code=303)
-    else:
-        return render("index.html", request, {"erro": "E-mail ou senha inválidos"})
+# 3. Rota do Dashboard (Acessado após o login)
+@app.get("/dashboard")
+async def dashboard(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html")
 
 
-@app.get("/logout")
-async def fazer_logout():
-    return RedirectResponse(url="/", status_code=303)
-
-
-@app.get("/index")
-async def redirect_index():
-    return RedirectResponse(url="/", status_code=303)
+# 4. Rota de Visualização (Catálogo de Estoque)
+@app.get("/visualizacao")
+async def visualizacao(request: Request):
+    return templates.TemplateResponse(request=request, name="visualizacao.html")

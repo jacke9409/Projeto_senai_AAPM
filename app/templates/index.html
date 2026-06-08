@@ -1,147 +1,86 @@
-{% extends "base.html" %}
-
-{% block title %}Login Administrativo - AAPM{% endblock %}
-
-{% block extra_css %}
-<style>
-    .hero__content {
-        justify-content: center !important;
-        align-items: center !important;
-        padding: 0 !important;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – AAPM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red-dark: #1a0505; --red-mid: #7a1010; --gold: #c8a84b; --gold-light: #e8c96a; --white: #f5f0ee; --sidebar-bg: rgba(15,4,4,0.88); --sidebar-w: 160px;
     }
-
-    .login-card {
-        width: 420px;
-        background: radial-gradient(circle at bottom right, #20070e 0%, #080506 80%);
-        border-radius: 24px;
-        padding: 40px 35px;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85);
-        border: 1px solid rgba(211, 155, 33, 0.2);
-        text-align: center;
-        z-index: 10;
-        backdrop-filter: blur(4px);
+    html, body { height: 100%; overflow: hidden; font-family: 'Barlow', sans-serif; color: var(--white); }
+    .bg { position: fixed; inset: 0; z-index: 0; background-color: var(--red-mid); }
+    .bg::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, #1a0505 0%, #7a1010 60%, #c0202a 100%);
     }
-
-    .logo-container {
-        height: 100px;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .logo-container img {
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .login-card h2 {
-        font-family: 'Cinzel', serif;
-        color: #ffffff;
-        font-size: 22px;
-        letter-spacing: 1px;
-        margin-bottom: 5px;
-    }
-
-    .login-card p {
-        color: #cfb065;
-        font-size: 12px;
-        text-transform: uppercase;
-        margin-bottom: 30px;
-        letter-spacing: 2px;
-    }
-
-    .form-group {
-        text-align: left;
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 12px;
-        font-weight: 600;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    .form-group input {
-        width: 100%;
-        height: 50px;
-        background-color: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(211, 155, 33, 0.3);
-        border-radius: 10px;
-        padding: 0 15px;
-        color: #ffffff;
-        font-size: 14px;
-        outline: none;
-        transition: all 0.3s;
-    }
-
-    .form-group input:focus {
-        border-color: #d39b21;
-        background-color: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 10px rgba(211, 155, 33, 0.2);
-    }
-
-    .btn-entrar {
-        width: 100%;
-        height: 50px;
-        background: linear-gradient(135deg, #d39b21 0%, #a67616 100%);
-        color: #080506;
-        border: none;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 700;
-        text-transform: uppercase;
-        cursor: pointer;
-        margin-top: 10px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .btn-entrar:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 25px rgba(211, 155, 33, 0.3);
-        background: linear-gradient(135deg, #e4be6b 0%, #d39b21 100%);
-    }
-
-    .footer-nota {
-        margin-top: 25px;
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.3);
-    }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="login-card">
-    <div class="logo-container">
-        <img src="/static/assets/Logo AAPM.svg" alt="Logo AAPM">
-    </div>
-    
-    <h2>CONEXÃO</h2>
-    <p>Painel Restrito</p>
-
-    <form action="/auth/login" method="POST">
-        <div class="form-group">
-            <label for="usuario">E-mail do Administrador</label>
-            <input type="email" id="usuario" name="username" placeholder="seu-email@aapm.com" required>
+    .shell { position: relative; z-index: 10; display: flex; height: 100vh; }
+    aside { width: var(--sidebar-w); background: var(--sidebar-bg); backdrop-filter: blur(12px); display: flex; flex-direction: column; border-right: 1px solid rgba(200,168,75,0.15); flex-shrink: 0; }
+    .sidebar-header { padding: 20px 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-header .logo-placeholder { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 12px; color: var(--gold); }
+    .sidebar-section { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); padding: 20px 16px 8px; }
+    nav a { display: block; padding: 11px 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75); text-decoration: none; letter-spacing: 0.5px; border-left: 3px solid transparent; transition: all 0.2s; }
+    nav a:hover, nav a.active { color: var(--white); background: rgba(200,168,75,0.08); border-left-color: var(--gold); }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-logout { padding: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-logout a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .sidebar-logout a:hover { color: var(--gold-light); }
+    main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px 12px; }
+    .topbar-left h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(30px, 4vw, 48px); letter-spacing: 4px; color: var(--gold-light); line-height: 1; }
+    .topbar-left p { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.75); margin-top: 4px; }
+    .content { flex: 1; padding: 16px 32px 32px; display: flex; flex-direction: column; gap: 24px; }
+    .feature-card { display: flex; border-radius: 12px; overflow: hidden; background: rgba(10,3,3,0.6); border: 1px solid rgba(200,168,75,0.2); backdrop-filter: blur(8px); max-width: 640px; box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    .feature-card .card-image { width: 200px; flex-shrink: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.2); font-size: 12px; }
+    .feature-card .card-body { padding: 28px 24px; }
+    .feature-card .card-body h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; margin-bottom: 8px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .mini-card { background: rgba(10,3,3,0.55); border: 1px solid rgba(200,168,75,0.15); border-radius: 8px; padding: 20px 16px; backdrop-filter: blur(6px); transition: all 0.25s; cursor: pointer; }
+    .mini-card:hover { border-color: var(--gold); background: rgba(200,168,75,0.08); transform: translateY(-3px); }
+    .mini-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px; margin-bottom: 4px; }
+    .mini-card p { font-size: 11px; color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="shell">
+    <aside>
+      <div class="sidebar-header"><div class="logo-placeholder">AAPM</div></div>
+      <div class="sidebar-section">Dashboard</div>
+      <nav>
+        <a href="/dashboard" class="active">Catálogos</a>
+        <a href="/visualizacao">Categorias</a>
+        <a href="#horarios">Horários</a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-logout"><a href="/login">Sair</a></div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>BEM VINDO</h1>
+          <p>Gerenciamento de Estoque e Serviços</p>
         </div>
-        
-        <div class="form-group">
-            <label for="senha">Senha de Acesso</label>
-            <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+      </div>
+      <div class="content">
+        <div class="feature-card">
+          <div class="card-image">SENAI BRÁS</div>
+          <div class="card-body">
+            <h2>INOVAÇÃO<br>TECNOLÓGICA</h2>
+            <p>Controle de Estoque Ativo</p>
+          </div>
         </div>
-
-        {% if erro %}
-        <div style="color: #ff4a4a; font-size: 13px; margin-bottom: 15px; font-weight: 600;">
-            {{ erro }}
+        <div class="cards-grid">
+          <div class="mini-card" onclick="location.href='/visualizacao.html'">
+            <div class="icon">📋</div>
+            <h3>Catálogos</h3>
+            <p>Ver produtos</p>
+          </div>
         </div>
-        {% endif %}
-
-        <button type="submit" class="btn-entrar">Entrar no Sistema</button>
-    </form>
-
-    <div class="footer-nota">Acesso exclusivo para administradores autorizados.</div>
-</div>
-{% endblock %}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

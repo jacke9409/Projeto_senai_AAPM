@@ -1,14 +1,270 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login – AAPM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --red-dark:   #1a0505;
+      --red-mid:    #7a1010;
+      --red-vivid:  #c0202a;
+      --gold:       #c8a84b;
+      --gold-light: #e8c96a;
+      --white:      #f5f0ee;
+      --card-bg:    rgba(15, 5, 5, 0.82);
+      --input-bg:   transparent;
+      --input-border: rgba(200,168,75,0.5);
+    }
+ 
+    html, body {
+      height: 100%;
+      font-family: 'Barlow', sans-serif;
+      color: var(--white);
+      overflow: hidden;
+    }
+ 
+    /* ── BACKGROUND ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      /* SEU CAMINHO DE IMAGEM ADICIONADO AQUI */
+      background-image: url('/static/assets/fundo-abstrato.jpg');
+      background-size: cover;
+      background-position: center;
+      background-color: var(--red-mid);
+    }
+    .bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.85) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(122,16,16,0.9) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 70% at 60% 80%, rgba(90,10,10,0.95) 0%, transparent 60%),
+        linear-gradient(135deg, #1a0505 0%, #7a1010 40%, #c0202a 70%, #e05060 100%);
+    }
+    .bg-icons {
+      position: fixed; inset: 0; z-index: 1;
+      pointer-events: none; overflow: hidden;
+    }
+    .bg-icons span {
+      position: absolute;
+      font-size: clamp(24px, 3vw, 48px);
+      color: rgba(255,255,255,0.07);
+      transform: rotate(-15deg);
+    }
+ 
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+    }
+    .logo-placeholder {
+      width: 64px; height: 64px; border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; color: var(--gold); letter-spacing: 1px;
+    }
+    .senai-info { text-align: right; }
+    .senai-info .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(26px, 4vw, 46px);
+      letter-spacing: 3px; line-height: 1;
+      color: var(--white);
+      text-shadow: 2px 2px 12px rgba(0,0,0,0.6);
+    }
+    .senai-info .subtitle {
+      font-size: 10px; font-weight: 300;
+      letter-spacing: 2px; color: rgba(255,255,255,0.75);
+      text-transform: uppercase;
+    }
+ 
+    /* ── LAYOUT ── */
+    .page {
+      position: relative; z-index: 10;
+      height: 100vh;
+      display: flex; align-items: center;
+      padding: 0 6vw;
+      gap: 8vw;
+    }
+ 
+    /* esquerda – texto */
+    .hero-text {
+      flex: 1; max-width: 460px;
+    }
+    .hero-text .tag {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold-light); margin-bottom: 16px;
+    }
+    .hero-text h1 {
+      font-size: clamp(20px, 2.8vw, 34px);
+      font-weight: 700; line-height: 1.4;
+      color: var(--white);
+      text-shadow: 1px 1px 8px rgba(0,0,0,0.5);
+      margin-bottom: 12px;
+    }
+    .hero-text .brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(18px, 2.4vw, 30px);
+      letter-spacing: 4px; color: var(--white);
+    }
+    .hero-text .brand-tag {
+      font-size: 10px; letter-spacing: 3px;
+      color: rgba(255,255,255,0.6); text-transform: uppercase;
+      margin-top: 4px;
+    }
+ 
+    /* direita – card login */
+    .login-card {
+      flex: 0 0 340px;
+      background: var(--card-bg);
+      border: 1px solid rgba(200,168,75,0.35);
+      border-radius: 10px;
+      padding: 40px 36px 36px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .login-card h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px; letter-spacing: 4px;
+      text-align: center; color: var(--gold-light);
+      margin-bottom: 30px;
+    }
+ 
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.6);
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      background: var(--input-bg);
+      border: none; border-bottom: 1px solid var(--input-border);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      padding: 8px 2px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+    .form-group input:focus { border-color: var(--gold); }
+ 
+    .btn-entrar {
+      width: 100%; margin-top: 28px;
+      padding: 13px;
+      background: var(--gold);
+      color: #1a0505;
+      border: none; border-radius: 4px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: 4px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-entrar:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+ 
+    .back-link {
+      display: block; text-align: center;
+      margin-top: 16px;
+      font-size: 12px; color: rgba(255,255,255,0.4);
+      text-decoration: none; letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold-light); }
+ 
+    /* ── FOOTER ── */
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      text-align: center; padding: 12px;
+      font-size: 10px; letter-spacing: 2px;
+      color: rgba(255,255,255,0.35); text-transform: uppercase;
+    }
+ 
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text > * { animation: fadeUp 0.8s ease both; }
+    .hero-text .tag         { animation-delay: 0.1s; }
+    .hero-text h1           { animation-delay: 0.25s; }
+    .hero-text .brand       { animation-delay: 0.4s; }
+    .hero-text .brand-tag  { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+ 
+  <div class="bg"></div>
+  <div class="bg-icons">
+    <span style="top:15%;left:5%">⊞</span>
+    <span style="top:35%;left:3%">⊟</span>
+    <span style="top:55%;left:6%">⊠</span>
+    <span style="top:75%;left:4%">⊡</span>
+    <span style="top:20%;right:12%">⛶</span>
+    <span style="top:50%;right:5%">◎</span>
+    <span style="top:70%;right:8%">⊕</span>
+    <span style="top:80%;right:15%">⊗</span>
+    <span style="top:10%;left:45%">✦</span>
+    <span style="top:65%;left:35%">❖</span>
+  </div>
+ 
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-placeholder">AAPM</div>
+    </div>
+    <div class="senai-info">
+      <div class="title">SENAI<br>BRÁS-SP</div>
+      <div class="subtitle">Francisco Matarazzo · Rua Correia de Andrade 232<br>Têxtil e Moda</div>
+    </div>
+  </header>
+ 
+  <main class="page">
+    <div class="hero-text">
+      <p class="tag">SENAI</p>
+      <h1>
+        Acesse o site da AAPM e<br>
+        descubra sobre nossos<br>
+        produtos com praticidade e<br>
+        rapidez.
+      </h1>
+      <div class="brand">Compre e agende com a AAPM</div>
+      <div class="brand-tag">AAPM</div>
+    </div>
+ 
+    <div class="login-card">
+      <h2>Login</h2>
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required/>
+        </div>
 
-{% block title %}Login - AAPM{% endblock %}
-
-{% block content %}
-<div style="max-width:400px; margin:80px auto; background:rgba(0,0,0,0.7); padding:2rem; border-radius:12px; text-align:center;">
-  <h2 style="color:#C47B45;">Acesso Administrativo</h2>
-  <form method="post" action="/api/login">
-    <input type="email" name="email" placeholder="E-mail" required style="width:100%; padding:10px; margin:10px 0; border-radius:6px; border:none;">
-    <input type="password" name="senha" placeholder="Senha" required style="width:100%; padding:10px; margin:10px 0; border-radius:6px; border:none;">
-    <button type="submit" class="btn btn--primary" style="width:100%;">Entrar</button>
-  </form>
-</div>
-{% endblock %}
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="••••••••" required/>
+        </div>
+        <button type="submit" class="btn-entrar">Entrar</button>
+      </form>
+      <a href="base" class="back-link">← Voltar ao início</a>
+    </div>
+  </main>
+ 
+  <footer>AAPM &nbsp;·&nbsp; SENAI Brás-SP &nbsp;·&nbsp; Têxtil e Moda</footer>
+ 
+</body>
+</html>
