@@ -26,3 +26,8 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     ${downgrades if downgrades else "pass"}
+
+controller
+models
+database.py
+main.py

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from database import Base, engine
+from app.database import Base, engine
 from controllers import usuario_controller, categoria_controller
 
 Base.metadata.create_all(bind=engine)

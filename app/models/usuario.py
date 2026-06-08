@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from app.database import Base
 
@@ -7,7 +7,9 @@ class Usuario(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False, index=True, unique=True)
-    senha_hash = Column(String(255), nullable=False)
+    senha_hash = Column(String(255), nullable=True)
+    senha = Column(String(255), nullable=True)
+    categoria_id = Column(Integer, nullable=True)
 
     role = Column(String(20), nullable=False, default="usuario")
 
