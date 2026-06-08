@@ -15,8 +15,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRACAO_MINUTOS = os.getenv("ACCESS_TOKEN_EXPIRACAO_MINUTOS")
 
-#CryptContent
-pwd_content = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# CryptContext: usar pbkdf2_sha256 (compatível sem dependência C)
+pwd_content = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 #Funções de senha
 def hash_senha(senha: str):

@@ -1,18 +1,20 @@
-from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey, String
 from sqlalchemy.orm import relationship
-from database import Base
+
+from app.database import Base
+from sqlalchemy.sql import func
 from datetime import datetime
 
 class Venda(Base):
     __tablename__ = "vendas"
     id = Column(Integer, primary_key=True, index=True)
-    associado_id = Column(Integer, ForeignKey("associados.id"))
-    data = Column(DateTime, default=datetime.now)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="SET NULL"), nullable=True)
+    data = Column(DateTime, server_default=func.now())
     valor_total = Column(Float, nullable=False)
     metodo_pagamento = Column(String(30))
     status = Column(String(20), default="concluida")
     
-    associado = relationship("Associado")
+    usuario = relationship("Usuario")
     itens = relationship("ItemVenda", back_populates="venda")
 
 class ItemVenda(Base):

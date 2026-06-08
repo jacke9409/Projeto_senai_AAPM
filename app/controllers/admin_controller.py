@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.usuario import Usuario
-from app.auth import get_admin, hash_senha
+from auth import get_admin, hash_senha
 
 
 router = APIRouter(prefix="/usuarios", tags=["Usuários"])

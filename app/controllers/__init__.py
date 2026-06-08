@@ -1,9 +1,8 @@
-from app.models import categoria
-from app.models import produto
-from app.models import usuario
-from app.models import movimentacao
+from app.controllers import usuario_controller
+from app.controllers import categoria_controller
+from app.controllers import admin_controller
+from app.controllers import produtos_controller
+from app.controllers import vendas_controller
 
 
-
-# python -m alembic revision --autogenerate -m "criar tabelas movimentacao"
-# python -m alembic upgrade head
+# Expor os submódulos de rotas do pacote controllers
