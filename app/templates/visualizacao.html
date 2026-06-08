@@ -1,19 +1,328 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portal Premium – AAPM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
-{% block title %}Visão Geral - AAPM{% endblock %}
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --red-dark:   #1a0505;
+      --red-mid:    #7a1010;
+      --white:      #f5f0ee;
+      --gold:       #c8a84b;
+      --gold-light: #e8c96a;
+      --topbar-bg:  rgba(20, 20, 19, 0.9);
+      --card-bg:    rgba(20, 15, 15, 0.65);
+    }
+ 
+    html {
+      scroll-behavior: smooth;
+    }
 
-{% block content %}
-<div style="max-width:900px; margin:60px auto; background:rgba(0,0,0,0.6); padding:2rem; border-radius:12px; color:white;">
-  <h2 style="color:#C47B45;">Visão Geral do Sistema AAPM</h2>
-  <p>Bem-vindo à plataforma de gestão da Associação de Alunos, Pais, Professores e Mestres do SENAI Brás-SP.</p>
-  <hr style="margin:20px 0;">
-  <h3>Funcionalidades:</h3>
-  <ul>
-    <li>Gestão de associados (cadastro, consulta, emissão de carteirinha)</li>
-    <li>Controle de estoque de produtos (uniformes, materiais, kits)</li>
-    <li>Registro de vendas e emissão de recibos</li>
-    <li>Relatórios financeiros e de associados</li>
-  </ul>
-  <p><a href="/login" class="btn btn--primary" style="display:inline-block; margin-top:20px;">Acessar o sistema</a></p>
-</div>
-{% endblock %}
+    body {
+      background-color: var(--red-dark);
+      font-family: 'Barlow', sans-serif;
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+ 
+    /* ── BACKGROUND ── */
+    .bg {
+      position: fixed; inset: 0; z-index: -1;
+      background-image: url('/static/assets/fundo-abstrato.jpg');
+      background-size: cover; 
+      background-position: center;
+      background-color: var(--red-mid);
+    }
+    .bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(192,32,42,0.2) 0%, transparent 80%),
+        linear-gradient(to bottom, rgba(26,5,5,0.7) 0%, rgba(15,3,3,0.95) 100%);
+    }
+ 
+    /* ── PREMIUM NAVBAR ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 90px;
+      background-color: var(--topbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 10%;
+      border-bottom: 1px solid rgba(200, 168, 75, 0.15);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transform: translateY(-100%);
+    }
+    .logo-box {
+      display: flex; align-items: center; gap: 15px;
+    }
+    .logo-placeholder {
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: rgba(0,0,0,0.8);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; color: var(--gold);
+      box-shadow: 0 0 15px rgba(200, 168, 75, 0.3);
+    }
+    .logo-text h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; font-weight: 400;
+      color: var(--gold-light); 
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .logo-text p {
+      font-size: 11px; color: rgba(255,255,255,0.5);
+    }
+
+    nav.nav-menu ul {
+      display: flex; list-style: none; gap: 30px;
+    }
+    nav.nav-menu ul li a {
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      font-size: 14px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; padding: 8px 0;
+      position: relative; transition: color 0.3s;
+    }
+    nav.nav-menu ul li a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+      background-color: var(--gold); transition: width 0.3s;
+    }
+    nav.nav-menu ul li a:hover { color: var(--gold-light); }
+    nav.nav-menu ul li a:hover::after { width: 100%; }
+
+    .nav-actions { display: flex; align-items: center; gap: 20px; }
+    .btn-logout {
+      color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px;
+      font-weight: 600; padding: 10px 20px; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s;
+    }
+    .btn-logout:hover { background: rgba(211, 47, 47, 0.2); color: #fff; border-color: rgba(211, 47, 47, 0.4); }
+ 
+    /* ── MAIN LAYOUT WRAPPER ── */
+    .container {
+      max-width: 1200px; margin: 0 auto; padding: 140px 20px 80px 20px;
+      position: relative; z-index: 10;
+    }
+ 
+    /* ── HERO BANNER SECTION ── */
+    .hero-section {
+      margin-bottom: 60px; display: flex; justify-content: center;
+    }
+    .promo-card {
+      display: flex; width: 100%; height: 400px;
+      background-color: #0d0605; border-radius: 32px;
+      border: 1px solid rgba(200, 168, 75, 0.25); overflow: hidden;
+      box-shadow: 0 35px 70px rgba(0,0,0,0.7);
+      opacity: 0; transform: scale(0.95);
+      transform-style: preserve-3d; will-change: transform;
+    }
+    .promo-img-side {
+      width: 50%;
+      background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop');
+      background-size: cover; background-position: center; position: relative;
+    }
+    .promo-img-side::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 40%, #0d0605 100%);
+    }
+    .promo-text-side {
+      width: 50%; padding: 60px;
+      display: flex; flex-direction: column; justify-content: center;
+      transform: translateZ(40px);
+    }
+    .promo-text-side h2 {
+      font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 54px;
+      line-height: 0.95; letter-spacing: 2px; color: var(--white); margin-bottom: 20px;
+    }
+    .promo-text-side .author {
+      font-size: 24px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px;
+    }
+    .promo-text-side .social-tag {
+      font-size: 14px; color: rgba(255,255,255,0.4); font-weight: 400;
+    }
+ 
+    /* ── SECTIONS / FEATURES GRID ── */
+    .portal-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px; margin-top: 40px;
+    }
+    .grid-item {
+      background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      border-radius: 24px; padding: 35px; text-align: center;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      cursor: pointer; text-decoration: none; color: inherit;
+      opacity: 0; transform: translateY(40px);
+    }
+    .grid-item:hover {
+      transform: translateY(-8px); border-color: var(--gold);
+      box-shadow: 0 15px 35px rgba(200, 168, 75, 0.15);
+      background: rgba(30, 22, 22, 0.86);
+    }
+    .grid-icon {
+      font-size: 36px; margin-bottom: 20px; display: inline-block;
+    }
+    .grid-item h3 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+      color: var(--gold-light); letter-spacing: 1px; margin-bottom: 10px;
+    }
+    .grid-item p {
+      font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.5;
+    }
+
+    /* ── FLOATING BADGE ── */
+    .bottom-indicator {
+      position: fixed; bottom: 25px; right: 30px;
+      background: rgba(20, 20, 19, 0.8); border: 1px solid rgba(200,168,75,0.2);
+      backdrop-filter: blur(8px); padding: 8px 20px; border-radius: 50px;
+      font-size: 12px; font-weight: 600; color: var(--gold-light);
+      display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      z-index: 100; transform: translateY(100px);
+    }
+
+    /* Responsividade */
+    @media (max-width: 900px) {
+      header { padding: 0 5%; height: 80px; }
+      nav.nav-menu { display: none; } /* Em produção você faria um menu Hamburguer aqui */
+      .container { padding-top: 120px; }
+      .promo-card { flex-direction: column; height: auto; }
+      .promo-img-side { width: 100%; height: 220px; }
+      .promo-img-side::after { background: linear-gradient(to bottom, transparent 40%, #0d0605 100%); }
+      .promo-text-side { width: 100%; text-align: center; padding: 40px 25px; }
+      .promo-text-side h2 { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <div class="bg"></div>
+ 
+  <header id="navbar">
+    <div class="logo-box">
+      <div class="logo-placeholder">AAPM</div>
+      <div class="logo-text">
+        <h1>BEM VINDO</h1>
+        <p>Portal de Serviços Premium</p>
+      </div>
+    </div>
+    
+    <nav class="nav-menu">
+      <ul>
+        <li><a href="#catalogos">Catálogos</a></li>
+        <li><a href="#categorias">Categorias</a></li>
+        <li><a href="#horarios">Horários</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#duvidas">Dúvidas</a></li>
+      </ul>
+    </nav>
+    
+    <div class="nav-actions">
+      <a href="/" class="btn-logout" id="logout">Sair</a>
+    </div>
+  </header>
+ 
+  <div class="container">
+    
+    <section class="hero-section">
+      <div class="promo-card" id="promoCard">
+        <div class="promo-img-side"></div>
+        <div class="promo-text-side">
+          <h2>Inovação<br>Tecnológica</h2>
+          <p class="author">Senai-SP</p>
+          <p class="social-tag">Instagram: @senaitextilemoda</p>
+        </div>
+      </div>
+    </section>
+
+    <main class="portal-grid">
+      
+      <a href="#catalogos" class="grid-item">
+        <span class="grid-icon">📊</span>
+        <h3>Catálogos</h3>
+        <p>Explore nossos catálogos interativos e lançamentos exclusivos.</p>
+      </a>
+
+      <a href="#categorias" class="grid-item">
+        <span class="grid-icon">🏷️</span>
+        <h3>Categorias</h3>
+        <p>Navegue por setores e encontre exatamente o que você precisa.</p>
+      </a>
+
+      <a href="#horarios" class="grid-item">
+        <span class="grid-icon">🕒</span>
+        <h3>Horários</h3>
+        <p>Consulte nossa grade de atendimento e disponibilidades de horários.</p>
+      </a>
+
+      <a href="#servicos" class="grid-item">
+        <span class="grid-icon">🛠️</span>
+        <h3>Serviços Disponíveis</h3>
+        <p>Área dedicada ao suporte e ferramentas corporativas completas.</p>
+      </a>
+
+      <a href="#duvidas" class="grid-item">
+        <span class="grid-icon">💡</span>
+        <h3>Dúvidas</h3>
+        <p>Tem alguma pergunta? Acesse nossa central de ajuda rápida.</p>
+      </a>
+
+    </main>
+    
+  </div>
+ 
+  <div class="bottom-indicator" id="badge">
+    <span>🛡️ Portal Oficial Ativo</span>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Linha do tempo da animação de entrada elegante (Scroll/Portal style)
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      tl.to("#navbar", { translateY: 0, duration: 1 })
+        .to("#promoCard", { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.1)" }, "-=0.5")
+        .to(".grid-item", { opacity: 1, translateY: 0, duration: 0.8, stagger: 0.12, ease: "power3.out" }, "-=0.6")
+        .to("#badge", { translateY: 0, duration: 0.5 }, "-=0.4");
+
+      // 2. Efeito Magnético 3D no Banner Principal (Apenas Desktop)
+      const card = document.getElementById("promoCard");
+      
+      if (window.innerWidth > 900) {
+        document.addEventListener("mousemove", (e) => {
+          const xAxis = (window.innerWidth / 2 - e.pageX) / 45; 
+          const yAxis = (window.innerHeight / 2 - e.pageY) / 45; 
+          
+          gsap.to(card, {
+            rotationY: xAxis,
+            rotationX: -yAxis,
+            duration: 0.6,
+            ease: "power2.out"
+          });
+        });
+
+        document.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            rotationY: 0,
+            rotationX: 0,
+            duration: 1,
+            ease: "power3.out"
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

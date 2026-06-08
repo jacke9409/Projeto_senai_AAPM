@@ -1,20 +1,86 @@
-
-{% extends "base.html" %}
-
-{% block title %}Home - AAPM SENAI{% endblock %}
-
-{% block content %}
-<div class="headline">
-  <h1>Descubra a inovação em sua gestão.<br>Gerenciamento inteligente de estoque<br>com a AAPM SENAI Brás-SP.</h1>
-  <p>Soluções avançadas para o setor têxtil.</p>
-</div>
-<div class="actions">
-  <a href="/login" class="btn btn--primary">
-    <span class="btn__avatar">L</span>
-    Acesso Administrativo
-  </a>
-  <a href="/visualizacao" class="btn btn--secondary">
-    Visão Geral do Sistema
-  </a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – AAPM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red-dark: #1a0505; --red-mid: #7a1010; --gold: #c8a84b; --gold-light: #e8c96a; --white: #f5f0ee; --sidebar-bg: rgba(15,4,4,0.88); --sidebar-w: 160px;
+    }
+    html, body { height: 100%; overflow: hidden; font-family: 'Barlow', sans-serif; color: var(--white); }
+    .bg { position: fixed; inset: 0; z-index: 0; background-color: var(--red-mid); }
+    .bg::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, #1a0505 0%, #7a1010 60%, #c0202a 100%);
+    }
+    .shell { position: relative; z-index: 10; display: flex; height: 100vh; }
+    aside { width: var(--sidebar-w); background: var(--sidebar-bg); backdrop-filter: blur(12px); display: flex; flex-direction: column; border-right: 1px solid rgba(200,168,75,0.15); flex-shrink: 0; }
+    .sidebar-header { padding: 20px 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-header .logo-placeholder { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 12px; color: var(--gold); }
+    .sidebar-section { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); padding: 20px 16px 8px; }
+    nav a { display: block; padding: 11px 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75); text-decoration: none; letter-spacing: 0.5px; border-left: 3px solid transparent; transition: all 0.2s; }
+    nav a:hover, nav a.active { color: var(--white); background: rgba(200,168,75,0.08); border-left-color: var(--gold); }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-logout { padding: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-logout a { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .sidebar-logout a:hover { color: var(--gold-light); }
+    main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px 12px; }
+    .topbar-left h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(30px, 4vw, 48px); letter-spacing: 4px; color: var(--gold-light); line-height: 1; }
+    .topbar-left p { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.75); margin-top: 4px; }
+    .content { flex: 1; padding: 16px 32px 32px; display: flex; flex-direction: column; gap: 24px; }
+    .feature-card { display: flex; border-radius: 12px; overflow: hidden; background: rgba(10,3,3,0.6); border: 1px solid rgba(200,168,75,0.2); backdrop-filter: blur(8px); max-width: 640px; box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    .feature-card .card-image { width: 200px; flex-shrink: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.2); font-size: 12px; }
+    .feature-card .card-body { padding: 28px 24px; }
+    .feature-card .card-body h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; margin-bottom: 8px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .mini-card { background: rgba(10,3,3,0.55); border: 1px solid rgba(200,168,75,0.15); border-radius: 8px; padding: 20px 16px; backdrop-filter: blur(6px); transition: all 0.25s; cursor: pointer; }
+    .mini-card:hover { border-color: var(--gold); background: rgba(200,168,75,0.08); transform: translateY(-3px); }
+    .mini-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px; margin-bottom: 4px; }
+    .mini-card p { font-size: 11px; color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="shell">
+    <aside>
+      <div class="sidebar-header"><div class="logo-placeholder">AAPM</div></div>
+      <div class="sidebar-section">Dashboard</div>
+      <nav>
+        <a href="/dashboard" class="active">Catálogos</a>
+        <a href="/visualizacao">Categorias</a>
+        <a href="#horarios">Horários</a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-logout"><a href="/login">Sair</a></div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>BEM VINDO</h1>
+          <p>Gerenciamento de Estoque e Serviços</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="feature-card">
+          <div class="card-image">SENAI BRÁS</div>
+          <div class="card-body">
+            <h2>INOVAÇÃO<br>TECNOLÓGICA</h2>
+            <p>Controle de Estoque Ativo</p>
+          </div>
+        </div>
+        <div class="cards-grid">
+          <div class="mini-card" onclick="location.href='/visualizacao.html'">
+            <div class="icon">📋</div>
+            <h3>Catálogos</h3>
+            <p>Ver produtos</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,33 +1,40 @@
+import os
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-app = FastAPI(title="PDV AAPM")
+# 1. CRIA O APP (Apenas uma vez!)
+app = FastAPI(title="Projeto SENAI AAPM")
 
-# Arquivos estáticos
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+# 2. RESOLVE OS CAMINHOS
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+static_path = os.path.join(BASE_DIR, "static")
 
-# Templates (apontando para a pasta correta)
-templates = Jinja2Templates(directory="app/templates")
+# 3. MOUNTA A STATIC PRIMEIRO (Crucial para o url_for funcionar no Jinja2)
+app.mount("/static", StaticFiles(directory=static_path), name="static")
 
-# Rota da página inicial (usa o index.html)
+# 4. INICIALIZA OS TEMPLATES DEPOIS DA STATIC JÁ ESTAR REGISTRADA
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+
+
+# ── DEIXE SUAS ROTAS EXATAMENTE ASSIM ABAIXO ──
+
+# ── ROTAS DO SISTEMA CORRIGIDAS ──
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="base.html")
 
-# Rota da tela de login
 @app.get("/login", response_class=HTMLResponse)
-async def tela_login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+async def login(request: Request):
+    return templates.TemplateResponse(request=request, name="login.html")
 
-# Rota do dashboard (protegido depois)
 @app.get("/dashboard", response_class=HTMLResponse)
-async def tela_dashboard(request: Request):
-    usuario_logado = {"nome": "Jackelyne", "role": "ADMIN"}  # mock
-    return templates.TemplateResponse("dashboard.html", {"request": request, "usuario": usuario_logado})
+async def dashboard(request: Request):
+    # Passando o request como primeiro argumento nomeado mata o erro de vez
+    return templates.TemplateResponse(request=request, name="dashboard.html")
 
-# Rota de visão geral
 @app.get("/visualizacao", response_class=HTMLResponse)
-async def tela_visualizacao(request: Request):   # ← atenção ao "def"
-    return templates.TemplateResponse("visualizacao.html", {"request": request})
+async def visualizacao(request: Request):
+    return templates.TemplateResponse(request=request, name="visualizacao.html")
