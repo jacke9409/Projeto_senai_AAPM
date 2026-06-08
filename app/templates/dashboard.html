@@ -172,7 +172,7 @@
 
         .dropdown-item.logout:hover {
             background: linear-gradient(90deg, rgba(255, 107, 107, 0.15), transparent);
-            color: #ff6b6b;
+            color: #ac2525;
         }
 
         /* --- DASHBOARD LATERAL FIXO MELHORADO --- */
@@ -182,7 +182,7 @@
             top: 70px;
             width: 260px;
             height: calc(100vh - 70px);
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            background: linear-gradient(180deg, #eb7c7c 0%, #0f0f1a 100%);
             backdrop-filter: blur(12px);
             border-right: 1px solid rgba(211, 155, 33, 0.3);
             padding: 30px 0 20px 0;
@@ -501,11 +501,58 @@
             justify-content: center;
             transition: all 0.2s;
             cursor: pointer;
+            position: relative; /* ADICIONADO: Essencial para fixar o balão sobre o ícone */
         }
 
         .social-icon:hover {
             background: #d39b21;
             transform: translateY(-3px);
+        }
+
+        /* --- BALÕES DE INFORMAÇÃO (TOOLTIPS) AO PASSAR O MOUSE --- */
+        .social-icon::after {
+            content: attr(data-tooltip); /* Captura o texto do HTML dinamicamente */
+            position: absolute;
+            bottom: 130%; /* Posiciona acima do ícone */
+            left: 50%;
+            transform: translateX(-50%) scale(0.85);
+            background: linear-gradient(135deg, #140409 0%, #1e0a12 100%);
+            color: #e4be6b; /* Dourado elegante combinando com seu tema */
+            border: 1px solid #d39b21;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap; /* Impede que o texto quebre linhas */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Setinha indicadora abaixo do balão */
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            bottom: 115%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: #d39b21 transparent transparent transparent;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+        }
+
+        /* Ativa o efeito hover suave */
+        .social-icon:hover::after,
+        .social-icon:hover::before {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
         }
 
         /* --- CARDS DE ESTATÍSTICAS RÁPIDAS (NOVO) --- */
@@ -526,17 +573,6 @@
             text-align: center;
             border: 1px solid rgba(211, 155, 33, 0.2);
             transition: all 0.2s;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(211, 155, 33, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            color: #d39b21;
         }
 
         .stat-card:hover {
@@ -621,7 +657,7 @@
                 <span>isabella@aapm.com</span>
             </div>
             <hr>
-            <a href="#" class="dropdown-item">👤 Visualizar Conta</a>
+            <a href="{{ url_for('perfil') }}" class="dropdown-item">👤 Visualizar Conta</a>
             <a href="#" class="dropdown-item logout">🚪 Deslogar</a>
         </div>
     </div>
@@ -701,9 +737,9 @@
                     <h3>Senai-SP</h3>
                     <p>Referência em moda e tecnologia têxtil</p>
                     <div class="social-links">
-                        <div class="social-icon" onclick="alert('Instagram @senaitextilemoda')">📷</div>
-                        <div class="social-icon" onclick="alert('LinkedIn Senai SP')">🔗</div>
-                        <div class="social-icon" onclick="alert('WhatsApp Suporte')">💬</div>
+                        <div class="social-icon" data-tooltip="Instagram @senaitextilemoda" onclick="alert('Instagram @senaitextilemoda')">📷</div>
+                        <div class="social-icon" data-tooltip="LinkedIn Senai SP" onclick="alert('LinkedIn Senai SP')">🔗</div>
+                        <div class="social-icon" data-tooltip="WhatsApp Suporte" onclick="alert('WhatsApp Suporte')">💬</div>
                     </div>
                 </div>
             </div>
