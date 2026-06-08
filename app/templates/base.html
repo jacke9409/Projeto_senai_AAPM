@@ -7,7 +7,7 @@
     
     <style>
         /* Reset básico e importação de fonte moderna */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
         
         * {
             margin: 0;
@@ -18,134 +18,155 @@
 
         body {
             width: 100%;
-            min-height: 100vh;
-            /* SEU CAMINHO DE IMAGEM ADICIONADO AQUI */
+            height: 100vh;
+            min-height: 600px;
             background: url('/static/assets/fundo-abstrato.jpg') no-repeat center center;
             background-size: cover;
             color: #fff;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 40px;
+            justify-content:间-between; /* Mantém topo e centro distribuídos */
+            padding: 50px 60px;
+            overflow: hidden;
         }
 
         /* Cabeçalho (Logos e Identificação) */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            width: 100%;
-        }
+         header {
+    display: flex;
+    justify-content: flex-end; /* Faz o header focar em alinhar apenas o texto na direita */
+    align-items: flex-start;
+    width: 100%;
+    position: relative; /* Cria uma base segura para a logo flutuar */
+    flex: 0 0 auto;
+}
 
-        .logo-container {
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-container img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
-
+.logo-container {
+    position: absolute;
+    top: -180px;  /* Mude aqui! Quanto mais negativo, mais para CIMA ela sobe kkkkk */
+    left: -330px; /* Mude aqui! Quanto mais negativo, mais para a esquerda ela vai */
+    width: 890px; /* O tamanho que você escolheu */
+    height: auto;
+    background: none; 
+    border: none;
+    backdrop-filter: none;
+    padding: 0;
+}
+.logo-container img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
         .unidade-info {
             text-align: right;
-            max-width: 400px;
+            max-width: 450px;
         }
 
         .unidade-info h1 {
-            font-size: 2.5rem;
+            font-size: 2.6rem;
             font-weight: 700;
-            line-height: 1.1;
-            color: #1a1a1a; /* Tom escuro combinando com o topo da arte */
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.3);
+            line-height: 1.05;
+            color: #1b1616; /* Tom escuro integrado com a arte superior direita */
+            letter-spacing: 1px;
         }
 
         .unidade-info p {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #333;
-            margin-top: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2b2525;
+            margin-top: 4px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
         }
 
         /* Conteúdo Principal (Texto Centralizado) */
+        .hero-content-wrapper {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centraliza verticalmente no espaço restante */
+            align-items: center;
+            margin-top: -30px; /* Eleva sutilmente todo o conjunto do miolo para cima */
+        }
+
         .hero-text {
-            max-width: 800px;
-            margin: 40px auto;
+            max-width: 850px;
             text-align: center;
         }
 
         .hero-text .tag {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
             text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .hero-text h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            line-height: 1.4;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-            margin-bottom: 20px;
+            line-height: 1.35;
+            text-shadow: 2px 4px 15px rgba(0, 0, 0, 0.7);
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
         }
 
         .hero-text .brand {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 4px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
         }
 
         .hero-text .brand-tag {
-            font-size: 0.9rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            opacity: 0.8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+            opacity: 0.65;
             text-transform: uppercase;
         }
 
-        /* Container de Botões (Ações) */
+        /* Container de Botões (Ações posicionado mais ao meio/inferior estável) */
         .hero-actions {
             display: flex;
             gap: 20px;
             justify-content: center;
-            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
         }
 
         .btn {
             display: inline-block;
-            padding: 15px 40px;
-            font-size: 1rem;
+            padding: 14px 45px;
+            font-size: 0.9rem;
             font-weight: 700;
             text-decoration: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             text-align: center;
         }
 
-        /* Estilo para o botão "Entrar" (Dourado/Gold) */
+        /* Estilo para o botão "Entrar" */
         .btn-gold {
-            background-color: #d4af37;
-            color: #1a1a1a;
+            background-color: #baa253; /* Tom mostarda/dourado fosco idêntico à imagem */
+            color: #1a0505;
         }
 
         .btn-gold:hover {
             background-color: #fff;
-            color: #d4af37;
+            color: #baa253;
             transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(202, 174, 84, 0.4);
         }
 
-        /* Estilo para o botão "Ver Catálogo" (Contorno/Outline) */
+        /* Estilo para o botão "Ver Catálogo" */
         .btn-outline {
             background-color: transparent;
             color: #fff;
@@ -153,34 +174,54 @@
         }
 
         .btn-outline:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: #fff;
+            color: #1a0505;
             transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25);
         }
 
         /* Responsividade para telas menores */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+            body {
+                height: auto;
+                overflow-y: auto;
+                padding: 30px 24px;
+            }
             header {
                 flex-direction: column;
                 align-items: center;
-                gap: 20px;
+                gap: 16px;
             }
             .unidade-info {
                 text-align: center;
             }
-            .hero-text h1 {
-                font-size: 1.7rem;
+            .unidade-info h1 {
+                font-size: 2rem;
             }
-            body {
-                padding: 20px;
+            .hero-content-wrapper {
+                margin-top: 40px;
+            }
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 12px;
+            }
+            .btn {
+                width: 100%;
+                max-width: 280px;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- CABEÇALHO COM LOGO AMPLIADA E IDENTIFICAÇÃO ALINHADA -->
     <header>
         <div class="logo-container">
-            <img src="/static/assets/Logo AAPM.svg" alt="Logo AAPM" onerror="this.style.display='none'; this.parentElement.innerText='[Logo AAPM]'">
+            <img src="/static/assets/Logo AAPM.svg" alt="Logo AAPM" onerror="this.style.display='none'; this.parentElement.innerText='AAPM'">
         </div>
         
         <div class="unidade-info">
@@ -189,17 +230,22 @@
         </div>
     </header>
 
-    <main class="hero-text">
-        <p class="tag">SENAI</p>
-        <h1>Acesse o site da AAPM e<br>descubra sobre nossos<br>produtos com praticidade e<br>rapidez.</h1>
-        <div class="brand">Compre e agende com a AAPM</div>
-        <div class="brand-tag">AAPM</div>
-        
-        <div class="hero-actions">
-            <a href="/login" class="btn btn-gold">Entrar</a>
-            <a href="/visualizacao" class="btn btn-outline">Ver Catálogo</a>
-        </div>
-    </main>
+    <!-- WRAPPER CENTRALIZADOR (ORGANIZA O MEIO DA TELA) -->
+    <div class="hero-content-wrapper">
+        <main class="hero-text">
+            <p class="tag">SENAI</p>
+            <h1>Acesse o site da AAPM e<br>descubra sobre nossos<br>produtos com praticidade e<br>rapidez.</h1>
+            
+            <div class="brand">Compre e agende com a AAPM</div>
+            <div class="brand-tag">AAPM</div>
+            
+            <!-- BOTÕES INTEGRADOS AO CENTRO DO FLUXO -->
+            <div class="hero-actions">
+                <a href="/login" class="btn btn-gold">Acesso administrativo</a>
+                <a href="/visualizacao" class="btn btn-outline">Ver Catálogos</a>
+            </div>
+        </main>
+    </div>
 
 </body>
 </html>
