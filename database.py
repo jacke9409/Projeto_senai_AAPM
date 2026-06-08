@@ -1,19 +1,30 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from dotenv import load_dotenv
+import os
 
-# Usando SQLite para começar (depois pode trocar para PostgreSQL)
-SQLALCHEMY_DATABASE_URL = "sqlite:///./aapm.db"
+load_dotenv()
+# 🛠️ LINHA 7 ALTERADA: Adicionamos o "or" com o caminho padrão caso o .env falhe
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///./sql_app.db"
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+engine =  create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass 
+
+# Cria as tabelas quando todos os modelos estiverem carregados.
+def init_db():
+    # Importa os modelos para garantir que a metadata esteja completa
+    import app.models  # noqa: F401
+    Base.metadata.create_all(bind=engine)
+
 
 def get_db():
-    db = SessionLocal()
+    db = Session()
     try:
         yield db
     finally:
