@@ -53,28 +53,22 @@ header {
   color: #fff;
   z-index: 100;
 }
-
-.logo-box {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.logo-container {
+    position: absolute;
+    top: -130px;  /* Mude aqui! Quanto mais negativo, mais para CIMA ela sobe kkkkk */
+    left: -270px; /* Mude aqui! Quanto mais negativo, mais para a esquerda ela vai */
+    width: 890px; /* O tamanho que você escolheu */
+    height: auto;
+    background: none; 
+    border: none;
+    backdrop-filter: none;
+    padding: 0;
 }
-
-.logo-placeholder {
-  width: 48px; height: 48px;
-  border-radius: 12px;
-  border: 2px solid #e10600;
-  background: rgba(225, 6, 0, 0.1);
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 1;
-  color: #e10600;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  cursor: default;
+.logo-container img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .logo-text h1 {
@@ -503,8 +497,10 @@ nav.nav-menu ul li a.active {
   <div class="bg"></div>
  
   <header id="navbar">
-    <div class="logo-box">
-      <div class="logo-placeholder">AAPM</div>
+    <div class="log-container">
+      <div class="logo-container">
+            <img src="/static/assets/Logo AAPM.svg" alt="Logo AAPM" onerror="this.style.display='none'; this.parentElement.innerText='AAPM'">
+        </div>
       <div class="logo-text">
         <h1>BEM VINDO</h1>
         <p>Portal de Serviços Premium</p>
