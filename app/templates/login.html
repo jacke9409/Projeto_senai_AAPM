@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Administrativo Premium – AAPM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400;700&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --red-dark:   #0d0202;
+      --red-mid:    #5a0a0a;
+      --gold:       #d4af37;
+      --gold-glow:  rgba(212, 175, 55, 0.4);
+      --white:      #f5f0ee;
+      --card-bg:    rgba(10, 3, 3, 0.75); 
+      --input-border: rgba(255, 255, 255, 0.15);
+    }
+ 
+    html, body {
+      height: 100%;
+      font-family: 'Barlow', sans-serif;
+      color: var(--white);
+      overflow: hidden;
+      background-color: var(--red-dark);
+    }
+ 
+    /* ── BACKGROUND FUTURISTA ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url('/static/assets/fundo-abstrato.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(192,32,42,0.45) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(13,2,2,0.4) 0%, rgba(13,2,2,0.8) 100%);
+    }
+
+    /* Grid Cibernética Sutil de Fundo */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 1;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+ 
+    /* ── HEADER COM LOGO ISOLADA ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 40px 60px;
+    }
+    
+    
+.logo-container {
+    position: absolute;
+    top: -130px;  /* Mude aqui! Quanto mais negativo, mais para CIMA ela sobe kkkkk */
+    left: -270px; /* Mude aqui! Quanto mais negativo, mais para a esquerda ela vai */
+    width: 890px; /* O tamanho que você escolheu */
+    height: auto;
+    background: none; 
+    border: none;
+    backdrop-filter: none;
+    padding: 0;
+}
+    .logo-container img {
+      width: 100%; height: auto; display: block;
+    }
+
+    .senai-info { text-align: right; }
+    .senai-info .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 4.8vw, 56px);
+      letter-spacing: 3px; line-height: 0.85;
+      color: #111111;
+      font-weight: bold;
+    }
+    .senai-info .subtitle {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 1.5px; color: #111111;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+ 
+    /* ── LAYOUT CENTRAL ── */
+    .page {
+      position: relative; z-index: 10;
+      height: 100vh;
+      display: flex; 
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8vw;
+      gap: 4vw;
+    }
+ 
+    /* Esquerda – Texto Institucional */
+    .hero-text {
+      flex: 1; max-width: 550px;
+    }
+    .hero-text .tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 5px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .hero-text h1 {
+      font-size: clamp(26px, 3.4vw, 42px);
+      font-weight: 700; line-height: 1.25;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+      margin-bottom: 25px;
+    }
+    .hero-text .brand {
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 600; color: rgba(255,255,255,0.9);
+    }
+    .hero-text .brand-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gold); text-transform: uppercase;
+      margin-top: 8px;
+      opacity: 0.8;
+    }
+ 
+    /* Direita – Card de Login Glassmorphism */
+    .login-card {
+      flex: 0 0 410px;
+      background: var(--card-bg);
+      border: 1px solid rgba(214, 175, 55, 0.3); 
+      border-radius: 24px;
+      padding: 50px 40px 40px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.7), 
+                  inset 0 0 25px rgba(255,255,255,0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Detalhe de linha tecnológica no topo do card */
+    .login-card::before {
+      content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .login-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px; font-weight: 700;
+      text-align: center; color: var(--gold); 
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+ 
+    .form-group {
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px; font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .form-group input {
+      width: 100%;
+      background: transparent;
+      border: none; border-bottom: 2px solid var(--input-border);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 16px;
+      padding: 8px 0;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.15); }
+    
+    /* Foco futurista acendendo em Neon */
+    .form-group input:focus { 
+      border-color: var(--gold); 
+      filter: drop-shadow(0 2px 8px var(--gold-glow));
+    }
+ 
+    /* Botão com efeito reflexivo Laser Scanner */
+    .btn-entrar {
+      width: 100%; margin-top: 20px;
+      padding: 14px;
+      background: linear-gradient(135deg, #d4af37 0%, #aa841c 100%);
+      color: #0d0202;
+      border: none; 
+      border-radius: 12px; /* Cantos levemente facetados mais tecnológicos */
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px; font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(214, 175, 55, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-entrar::after {
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transform: skewX(-25deg);
+      animation: laserScan 4s infinite ease-in-out;
+    }
+    .btn-entrar:hover {
+      background: linear-gradient(135deg, #f3cd57 0%, #c59926 100%);
+      box-shadow: 0 0 30px rgba(214, 175, 55, 0.45);
+      transform: translateY(-2px);
+    }
+ 
+    .back-link {
+      display: block; text-align: center;
+      margin-top: 30px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .back-link:hover { color: var(--gold); text-shadow: 0 0 8px var(--gold-glow); }
+ 
+    /* ── FOOTER ── */
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      text-align: center; padding: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px; letter-spacing: 2px;
+      color: rgba(255,255,255,0.25); text-transform: uppercase;
+    }
+ 
+    /* Animações Cyber */
+    @keyframes laserScan {
+      0% { left: -100%; }
+      30% { left: 150%; }
+      100% { left: 150%; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(25px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-text > * { animation: fadeUp 0.8s ease both; }
+    .hero-text .tag         { animation-delay: 0.1s; }
+    .hero-text h1           { animation-delay: 0.2s; }
+    .hero-text .brand       { animation-delay: 0.3s; }
+    .hero-text .brand-tag  { animation-delay: 0.4s; }
+
+    @media (max-width: 850px) {
+      .page { flex-direction: column; justify-content: center; padding-top: 150px; gap: 35px; }
+      header { padding: 20px; }
+      .senai-info .title { font-size: 36px; }
+      .login-card { flex: 1 0 auto; width: 100%; max-width: 380px; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <div class="bg"></div>
+  <div class="bg-grid"></div>
+ 
+  <header>
+    <div class="logo-container">
+      <img src="/static/assets/Logo AAPM.svg" alt="Logo AAPM" onerror="this.style.display='none'; this.parentElement.innerText='AAPM'">
+    </div>
+    <div class="senai-info">
+      <div class="title">SENAI<br>BRÁS-SP</div>
+      <div class="subtitle">Francisco Matarazzo · Rua Correia de Andrade 232<br>Têxtil e Moda</div>
+    </div>
+  </header>
+ 
+  <main class="page">
+    <div class="hero-text">
+      <p class="tag">// CORE_SYSTEM</p>
+      <h1>
+        Acesse o site da AAPM e<br>
+        descubra sobre nossos<br>
+        produtos com praticidade e<br>
+        rapidez.
+      </h1>
+      <div class="brand">Compre e agende com a AAPM</div>
+      <div class="brand-tag">AAPM INTERFACE</div>
+    </div>
+ 
+    <!-- CARD ADMINISTRATIVO FUTURISTA -->
+    <div class="login-card">
+      <h2>Login Administrativo</h2>
+      
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="email">User_Email</label>
+          <input type="email" id="email" name="email" placeholder="Digite seu email institucional" required/>
+        </div>
+
+      
+        
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="Senha (opcional para UI atual)" />
+        </div>
+        
+        <button type="submit" class="btn-entrar">Autenticar</button>
+      </form>
+      
+      <a href="/" class="back-link">⏮ Return to home</a>
+    </div>
+  </main>
+ 
+  <footer>SYSTEM_STATUS: ACTIVE &nbsp;·&nbsp; AAPM SP &nbsp;·&nbsp; SENAI BRÁS</footer>
+ 
+</body>
+</html>

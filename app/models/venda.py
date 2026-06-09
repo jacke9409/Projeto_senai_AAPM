@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+
 from app.database import Base
+from sqlalchemy.sql import func
 from datetime import datetime
 
 class Venda(Base):

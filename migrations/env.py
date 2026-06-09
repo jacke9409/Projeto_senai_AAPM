@@ -1,4 +1,11 @@
+<<<<<<< HEAD
+from app.database import Base
+from app.models.usuario import Associado
+from app.models.produto import Produto
+from app.models.venda import Venda, ItemVenda
+=======
 from logging.config import fileConfig
+>>>>>>> origin/vinicios
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool

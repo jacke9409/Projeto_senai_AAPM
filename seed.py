@@ -1,15 +1,42 @@
+from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.models.produto import Produto
+from app.models.usuario import Usuario
+# Importa a função de hash que está no arquivo auth.py de vocês
+from auth import hash_senha 
 
-db = SessionLocal()
+def criar_admin_padrao():
+    db: Session = SessionLocal()
+    
+    try:
+        # Verifica se o admin já existe pelo e-mail
+        admin_existente = db.query(Usuario).filter(Usuario.email == "admin@senai.com").first()
+        
+        if not admin_existente:
+            print("Criando usuário administrador padrão com senha criptografada...")
+            
+            # Aqui usamos a função do auth.py para gerar o hash seguro
+            senha_segura = hash_senha("senai123")
+            
+            admin = Usuario(
+                nome="Gidalva Administradora",
+                email="admin@senai.com",
+                senha_hash=senha_segura,  # Salva o hash gerado pelo bcrypt
+                role="admin",
+                ativo=True
+            )
+            
+            db.add(admin)
+            db.commit()
+            print("✨ Usuário administrador criado com sucesso no banco!")
+            print("📧 Email: admin@senai.com | 🔑 Senha original: senai123")
+        else:
+            print("ℹ️ O usuário administrador já existe no banco de dados.")
+            
+    except Exception as e:
+        print(f"❌ Erro ao rodar o seed: {e}")
+        db.rollback()
+    finally:
+        db.close()
 
-produtos_teste = [
-    Produto(nome="Camisa Polo", preco=49.90, quantidade_estoque=30, categoria="Uniforme"),
-    Produto(nome="Apostila Têxtil", preco=35.00, quantidade_estoque=50, categoria="Material"),
-    Produto(nome="Kit Canetas", preco=15.50, quantidade_estoque=100, categoria="Papelaria"),
-]
-
-for p in produtos_teste:
-    db.add(p)
-db.commit()
-print("Produtos inseridos com sucesso!")
+if __name__ == "__main__":
+    criar_admin_padrao()

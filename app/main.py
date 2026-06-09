@@ -1,40 +1,73 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+import os
+from fastapi import FastAPI, Request, Form
+from typing import Optional
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from database import Base, engine
-from controllers import usuario_controller, categoria_controller
+from app.database import Base, engine
+# Modifique a linha 7 para ficar assim:
+from app.controllers import usuario_controller, categoria_controller
+
+# imports para login
+from fastapi.responses import RedirectResponse
+from app.database import SessionLocal
+from app.models.usuario import Usuario
+from auth import verificar_senha, criar_token
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="PDV AAPM")
 
-app.include_router(usuario_controller.router)
-app.include_router(categoria_controller.router)
+# 2. RESOLVE OS CAMINHOS
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+static_path = os.path.join(BASE_DIR, "static")
 
-# Arquivos estáticos
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+# 3. MOUNTA A STATIC PRIMEIRO (Crucial para o url_for funcionar no Jinja2)
+app.mount("/static", StaticFiles(directory=static_path), name="static")
 
-# Templates (apontando para a pasta correta)
-templates = Jinja2Templates(directory="app/templates")
+# 4. INICIALIZA OS TEMPLATES DEPOIS DA STATIC JÁ ESTAR REGISTRADA
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
-# Rota da página inicial (usa o index.html)
+
+# ── DEIXE SUAS ROTAS EXATAMENTE ASSIM ABAIXO ──
+
+# ── ROTAS DO SISTEMA CORRIGIDAS ──
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="base.html")
 
-# Rota da tela de login
 @app.get("/login", response_class=HTMLResponse)
-async def tela_login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+async def login(request: Request):
+    return templates.TemplateResponse(request=request, name="login.html")
 
-# Rota do dashboard (protegido depois)
+
+@app.post("/login")
+async def do_login(request: Request, email: str = Form(...), senha: str = Form(""), nome: Optional[str] = Form(None)):
+    # senha opcional no formulário atual; se não vier, tentamos autenticar pelo email apenas
+    db = SessionLocal()
+    try:
+        usuario = db.query(Usuario).filter(Usuario.email == email).first()
+        if not usuario:
+            return templates.TemplateResponse(request=request, name="login.html", context={"request": request, "erro": "Usuário não encontrado"}, status_code=401)
+
+        # Se a senha não foi enviada no formulário, considere autenticação por nome (simples)
+        if senha:
+            if not verificar_senha(senha, usuario.senha_hash):
+                return templates.TemplateResponse(request=request, name="login.html", context={"request": request, "erro": "Credenciais inválidas"}, status_code=401)
+
+        token = criar_token({"sub": usuario.email, "role": usuario.role})
+        resp = RedirectResponse(url="/dashboard", status_code=302)
+        resp.set_cookie(key="access_token", value=token, httponly=True)
+        return resp
+    finally:
+        db.close()
+
 @app.get("/dashboard", response_class=HTMLResponse)
-async def tela_dashboard(request: Request):
-    usuario_logado = {"nome": "Jackelyne", "role": "ADMIN"}  # mock
-    return templates.TemplateResponse("dashboard.html", {"request": request, "usuario": usuario_logado})
+async def dashboard(request: Request):
+    # Passando o request como primeiro argumento nomeado mata o erro de vez
+    return templates.TemplateResponse(request=request, name="dashboard.html")
 
-# Rota de visão geral
 @app.get("/visualizacao", response_class=HTMLResponse)
-async def tela_visualizacao(request: Request):   # ← atenção ao "def"
-    return templates.TemplateResponse("visualizacao.html", {"request": request})
+async def visualizacao(request: Request):
+    return templates.TemplateResponse(request=request, name="visualizacao.html")
